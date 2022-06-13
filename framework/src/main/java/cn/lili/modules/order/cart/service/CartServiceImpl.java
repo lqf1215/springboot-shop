@@ -7,8 +7,6 @@ import cn.lili.cache.Cache;
 import cn.lili.common.enums.PromotionTypeEnum;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.exception.ServiceException;
-import cn.lili.common.security.AuthUser;
-import cn.lili.common.security.context.UserContext;
 import cn.lili.common.utils.CurrencyUtil;
 import cn.lili.modules.goods.entity.dos.GoodsSku;
 import cn.lili.modules.goods.entity.enums.GoodsAuthEnum;
@@ -16,11 +14,9 @@ import cn.lili.modules.goods.entity.enums.GoodsStatusEnum;
 import cn.lili.modules.goods.entity.vos.GoodsVO;
 import cn.lili.modules.goods.service.GoodsService;
 import cn.lili.modules.goods.service.GoodsSkuService;
-import cn.lili.modules.user.entity.dos.User;
 import cn.lili.modules.user.entity.dos.UserAddress;
 import cn.lili.modules.user.entity.vo.UserVO;
 import cn.lili.modules.user.service.UserAddressService;
-import cn.lili.modules.user.service.UserBaseService;
 import cn.lili.modules.user.service.UserService;
 import cn.lili.modules.order.cart.entity.dto.MemberCouponDTO;
 import cn.lili.modules.order.cart.entity.dto.TradeDTO;
@@ -32,23 +28,14 @@ import cn.lili.modules.order.cart.entity.vo.TradeParams;
 import cn.lili.modules.order.cart.render.TradeBuilder;
 import cn.lili.modules.order.order.entity.dos.Trade;
 import cn.lili.modules.order.order.entity.vo.ReceiptVO;
-import cn.lili.modules.promotion.entity.dos.KanjiaActivity;
 import cn.lili.modules.promotion.entity.dos.MemberCoupon;
 import cn.lili.modules.promotion.entity.dos.PromotionGoods;
-import cn.lili.modules.promotion.entity.dto.search.KanjiaActivitySearchParams;
 import cn.lili.modules.promotion.entity.dto.search.MemberCouponSearchParams;
 import cn.lili.modules.promotion.entity.dto.search.PromotionGoodsSearchParams;
-import cn.lili.modules.promotion.entity.enums.KanJiaStatusEnum;
 import cn.lili.modules.promotion.entity.enums.MemberCouponStatusEnum;
 import cn.lili.modules.promotion.entity.enums.PromotionsScopeTypeEnum;
-import cn.lili.modules.promotion.entity.vos.PointsGoodsVO;
-import cn.lili.modules.promotion.service.KanjiaActivityService;
 import cn.lili.modules.promotion.service.MemberCouponService;
-import cn.lili.modules.promotion.service.PointsGoodsService;
 import cn.lili.modules.promotion.service.PromotionGoodsService;
-import cn.lili.modules.search.entity.dos.EsGoodsIndex;
-import cn.lili.modules.search.service.EsGoodsIndexService;
-import cn.lili.modules.search.service.EsGoodsSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,16 +77,7 @@ public class CartServiceImpl implements CartService {
      */
     @Autowired
     private UserAddressService userAddressService;
-    /**
-     * ES商品
-     */
-    @Autowired
-    private EsGoodsSearchService esGoodsSearchService;
-    /**
-     * 商品索引
-     */
-    @Autowired
-    private EsGoodsIndexService goodsIndexService;
+
     /**
      * ES商品
      */
@@ -128,7 +106,6 @@ public class CartServiceImpl implements CartService {
         }
         CartTypeEnum cartTypeEnum = getCartType(cartType);
         GoodsSku dataSku = checkGoods(skuId);
-        Map<String, Object> promotionMap = this.getCurrentGoodsPromotion(dataSku, cartType);
 
         try {
             //购物车方式购买需要保存之前的选择，其他方式购买，则直接抹除掉之前的记录
@@ -161,7 +138,7 @@ public class CartServiceImpl implements CartService {
                     //先清理一下 如果商品无效的话
                     cartSkuVOS.remove(cartSkuVO);
                     //购物车中不存在此商品，则新建立一个
-                    cartSkuVO = new CartSkuVO(dataSku, promotionMap);
+                    cartSkuVO = new CartSkuVO(dataSku);
                     cartSkuVO.setNum(num);
                     cartSkuVO.setCartType(cartTypeEnum);
                     //再设置加入购物车的数量
@@ -179,7 +156,7 @@ public class CartServiceImpl implements CartService {
                 tradeDTO.setUserName(userInfo.getUsername());
                 List<CartSkuVO> cartSkuVOS = tradeDTO.getSkuList();
                 //购物车中不存在此商品，则新建立一个
-                CartSkuVO cartSkuVO = new CartSkuVO(dataSku, promotionMap);
+                CartSkuVO cartSkuVO = new CartSkuVO(dataSku);
                 cartSkuVO.setNum(num);
                 cartSkuVO.setCartType(cartTypeEnum);
                 System.out.println(cartSkuVO.getPurchasePrice()+"==="+ cartSkuVO.getNum()+"===num"+num);
@@ -340,17 +317,6 @@ public class CartServiceImpl implements CartService {
         double totalPrice = tradeDTO.getSkuList().stream().mapToDouble(i -> i.getPurchasePrice() * i.getNum()).sum();
         if (tradeDTO.getSkuList() != null && !tradeDTO.getSkuList().isEmpty()) {
             List<String> ids = tradeDTO.getSkuList().stream().filter(i -> Boolean.TRUE.equals(i.getChecked())).map(i -> i.getGoodsSku().getId()).collect(Collectors.toList());
-
-            List<EsGoodsIndex> esGoodsList = esGoodsSearchService.getEsGoodsBySkuIds(ids);
-            for (EsGoodsIndex esGoodsIndex : esGoodsList) {
-                if (esGoodsIndex != null && esGoodsIndex.getPromotionMap() != null && !esGoodsIndex.getPromotionMap().isEmpty()) {
-                    List<String> couponIds = esGoodsIndex.getPromotionMap().keySet().stream().filter(i -> i.contains(PromotionTypeEnum.COUPON.name())).map(i -> i.substring(i.lastIndexOf("-") + 1)).collect(Collectors.toList());
-                    if (!couponIds.isEmpty()) {
-                        List<MemberCoupon> currentGoodsCanUse = memberCouponService.getCurrentGoodsCanUse(tradeDTO.getUserId(), couponIds, totalPrice);
-                        count = currentGoodsCanUse.size();
-                    }
-                }
-            }
 
             List<String> storeIds = new ArrayList<>();
             for (CartSkuVO cartSkuVO : tradeDTO.getSkuList()) {
@@ -542,41 +508,7 @@ public class CartServiceImpl implements CartService {
         return trade;
     }
 
-    private Map<String, Object> getCurrentGoodsPromotion(GoodsSku dataSku, String cartType) {
-        Map<String, Object> promotionMap;
-        EsGoodsIndex goodsIndex = goodsIndexService.findById(dataSku.getId());
-        if (goodsIndex == null) {
-            GoodsVO goodsVO = this.goodsService.getGoodsVO(dataSku.getGoodsId());
-            goodsIndex = goodsIndexService.getResetEsGoodsIndex(dataSku, goodsVO.getGoodsParamsDTOList());
-        }
-        if (goodsIndex.getPromotionMap() != null && !goodsIndex.getPromotionMap().isEmpty()) {
-            if (goodsIndex.getPromotionMap().keySet().stream().anyMatch(i -> i.contains(PromotionTypeEnum.SECKILL.name())) ||
-                    (goodsIndex.getPromotionMap().keySet().stream().anyMatch(i -> i.contains(PromotionTypeEnum.PINTUAN.name()))
-                            && CartTypeEnum.PINTUAN.name().equals(cartType))) {
 
-                Optional<Map.Entry<String, Object>> containsPromotion = goodsIndex.getPromotionMap().entrySet().stream().filter(i ->
-                        i.getKey().contains(PromotionTypeEnum.SECKILL.name()) || i.getKey().contains(PromotionTypeEnum.PINTUAN.name())).findFirst();
-                if (containsPromotion.isPresent()) {
-                    JSONObject promotionsObj = JSONUtil.parseObj(containsPromotion.get().getValue());
-                    PromotionGoodsSearchParams searchParams = new PromotionGoodsSearchParams();
-                    searchParams.setSkuId(dataSku.getId());
-                    searchParams.setPromotionId(promotionsObj.get("id").toString());
-                    PromotionGoods promotionsGoods = promotionGoodsService.getPromotionsGoods(searchParams);
-                    if (promotionsGoods != null && promotionsGoods.getPrice() != null) {
-                        dataSku.setPromotionFlag(true);
-                        dataSku.setPromotionPrice(promotionsGoods.getPrice());
-                    } else {
-                        dataSku.setPromotionFlag(false);
-                        dataSku.setPromotionPrice(null);
-                    }
-                }
-            }
-            promotionMap = goodsIndex.getPromotionMap();
-        } else {
-            promotionMap = null;
-        }
-        return promotionMap;
-    }
 
 
     /**

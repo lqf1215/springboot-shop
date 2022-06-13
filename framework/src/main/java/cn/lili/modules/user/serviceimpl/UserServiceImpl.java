@@ -207,12 +207,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public long getMemberNum(UserSearchVO userSearchVO) {
         QueryWrapper<User> queryWrapper = Wrappers.query();
         //用户名查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "username", userSearchVO.getUsername());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "name", userSearchVO.getUsername());
         //按照电话号码查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getMobile()), "mobile", userSearchVO.getMobile());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getMobile()), "phone", userSearchVO.getMobile());
         //按照状态查询
-        queryWrapper.eq(CharSequenceUtil.isNotBlank(userSearchVO.getDisabled()), "disabled",
-                userSearchVO.getDisabled().equals(SwitchEnum.OPEN.name()) ? 1 : 0);
+//        queryWrapper.eq(CharSequenceUtil.isNotBlank(userSearchVO.getDisabled()), "disabled",
+//                userSearchVO.getDisabled().equals(SwitchEnum.OPEN.name()) ? 1 : 0);
         queryWrapper.orderByDesc("create_time");
         return this.count(queryWrapper);
     }

@@ -73,11 +73,7 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
      */
     @Autowired
     private OrderComplaintStatisticsService orderComplaintStatisticsService;
-    /**
-     * 分销员提现
-     */
-    @Autowired
-    private DistributionCashStatisticsService distributionCashStatisticsService;
+
     /**
      * 平台PV统计
      */
@@ -105,8 +101,7 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         indexNoticeVO.setRefund(afterSaleStatisticsService.applyNum(null));
         //投诉审核
         indexNoticeVO.setComplain(orderComplaintStatisticsService.waitComplainNum());
-        //分销员提现审核
-        indexNoticeVO.setDistributionCash(distributionCashStatisticsService.newDistributionCash());
+
         //待处理商家结算
         indexNoticeVO.setWaitPayBill(billStatisticsService.billNum(BillStatusEnum.CHECK));
         return indexNoticeVO;

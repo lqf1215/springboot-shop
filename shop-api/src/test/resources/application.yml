@@ -243,14 +243,14 @@ lili:
     maxPoolSize: 50
     queueCapacity: 50
   data:
-    elasticsearch:
-      cluster-name: elasticsearch
-      cluster-nodes: 192.168.0.116:9200
-      index:
-        number-of-replicas: 0
-        number-of-shards: 3
-      index-prefix: lili
-      schema: http
+#    elasticsearch:
+#      cluster-name: elasticsearch
+#      cluster-nodes: 192.168.0.116:9200
+#      index:
+#        number-of-replicas: 0
+#        number-of-shards: 3
+#      index-prefix: lili
+#      schema: http
     #      account:
     #        username: elastic
     #        password: LiLiShopES

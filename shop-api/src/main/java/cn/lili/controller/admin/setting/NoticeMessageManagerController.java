@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
-import org.elasticsearch.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,7 +75,7 @@ public class NoticeMessageManagerController {
 
             return ResultUtil.data(noticeMessageDetailDTO);
         }
-        throw new ResourceNotFoundException(ResultCode.NOTICE_NOT_EXIST.message());
+        return ResultUtil.data(null);
     }
 
 
@@ -98,7 +97,7 @@ public class NoticeMessageManagerController {
             noticeMessageService.updateById(noticeMessage);
             return ResultUtil.data(noticeMessage);
         }
-        throw new ResourceNotFoundException(ResultCode.NOTICE_NOT_EXIST.message());
+        return ResultUtil.data(noticeMessage);
     }
 
     @ApiOperation(value = "修改站内信状态")
@@ -122,7 +121,7 @@ public class NoticeMessageManagerController {
             }
             throw new ServiceException(ResultCode.NOTICE_ERROR);
         }
-        throw new ResourceNotFoundException(ResultCode.NOTICE_NOT_EXIST.message());
+        return ResultUtil.data(messageTemplate);
     }
 
 }

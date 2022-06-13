@@ -3,8 +3,6 @@ package cn.lili.modules.order.cart.render.impl;
 import cn.lili.cache.Cache;
 import cn.lili.cache.CachePrefix;
 import cn.lili.common.utils.CurrencyUtil;
-import cn.lili.modules.distribution.entity.dos.DistributionGoods;
-import cn.lili.modules.distribution.service.DistributionGoodsService;
 import cn.lili.modules.order.cart.entity.dto.TradeDTO;
 import cn.lili.modules.order.cart.entity.enums.RenderStepEnums;
 import cn.lili.modules.order.cart.entity.vo.CartSkuVO;
@@ -30,8 +28,6 @@ public class DistributionPriceRender implements CartRenderStep {
     @Autowired
     private Cache cache;
 
-    @Autowired
-    private DistributionGoodsService distributionGoodsService;
 
     @Override
     public RenderStepEnums step() {
@@ -61,21 +57,7 @@ public class DistributionPriceRender implements CartRenderStep {
         List<String> skuIds = tradeDTO.getCheckedSkuList().stream().map(cartSkuVO -> {
             return cartSkuVO.getGoodsSku().getId();
         }).collect(Collectors.toList());
-        //是否包含分销商品
-        List<DistributionGoods> distributionGoods = distributionGoodsService.distributionGoods(skuIds);
-        if (distributionGoods != null && !distributionGoods.isEmpty()) {
-            distributionGoods.forEach(dg -> tradeDTO.getCheckedSkuList().forEach(cartSkuVO -> {
-                if (cartSkuVO.getGoodsSku().getId().equals(dg.getSkuId())) {
-                    cartSkuVO.setDistributionGoods(dg);
-                }
-            }));
-        }
 
-        for (CartSkuVO cartSkuVO : tradeDTO.getCheckedSkuList()) {
-            if (cartSkuVO.getDistributionGoods() != null) {
-                cartSkuVO.getPriceDetailDTO().setDistributionCommission(CurrencyUtil.mul(cartSkuVO.getNum(), cartSkuVO.getDistributionGoods().getCommission()));
-            }
-        }
 
     }
 }

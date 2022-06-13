@@ -11,10 +11,7 @@ import cn.lili.modules.goods.entity.vos.GoodsVO;
 import cn.lili.modules.goods.entity.vos.HomeGoodsVO;
 import cn.lili.modules.goods.service.GoodsService;
 import cn.lili.modules.goods.service.GoodsSkuService;
-import cn.lili.modules.search.entity.dos.EsGoodsIndex;
-import cn.lili.modules.search.entity.dos.EsGoodsRelatedInfo;
 import cn.lili.modules.search.entity.dto.EsGoodsSearchDTO;
-import cn.lili.modules.search.service.EsGoodsSearchService;
 import cn.lili.modules.search.service.HotWordsService;
 import cn.lili.modules.statistics.aop.PageViewPoint;
 import cn.lili.modules.statistics.aop.enums.PageViewEnum;
@@ -25,7 +22,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,11 +53,7 @@ public class GoodsBuyerController {
      */
     @Autowired
     private GoodsSkuService goodsSkuService;
-    /**
-     * ES商品搜索
-     */
-    @Autowired
-    private EsGoodsSearchService goodsSearchService;
+
 
     @Autowired
     private HotWordsService hotWordsService;
@@ -105,21 +97,9 @@ public class GoodsBuyerController {
         return ResultUtil.data(goodsService.queryByParams(goodsSearchParams));
     }
 
-    @ApiOperation(value = "从ES中获取商品信息")
-    @GetMapping("/es")
-    public ResultMessage<SearchPage<EsGoodsIndex>> getGoodsByPageFromEs(EsGoodsSearchDTO goodsSearchParams, PageVO pageVO) {
-        pageVO.setNotConvert(true);
-        SearchPage<EsGoodsIndex> esGoodsIndices = goodsSearchService.searchGoods(goodsSearchParams, pageVO);
-        return ResultUtil.data(esGoodsIndices);
-    }
 
-    @ApiOperation(value = "从ES中获取相关商品品牌名称，分类名称及属性")
-    @GetMapping("/es/related")
-    public ResultMessage<EsGoodsRelatedInfo> getGoodsRelatedByPageFromEs(EsGoodsSearchDTO goodsSearchParams, PageVO pageVO) {
-        pageVO.setNotConvert(true);
-        EsGoodsRelatedInfo selector = goodsSearchService.getSelector(goodsSearchParams, pageVO);
-        return ResultUtil.data(selector);
-    }
+
+
 
     @ApiOperation(value = "获取搜索热词")
     @GetMapping("/hot-words")

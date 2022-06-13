@@ -8,7 +8,6 @@ import cn.lili.common.utils.IpUtils;
 import cn.lili.common.utils.SpelUtil;
 import cn.lili.common.utils.ThreadPoolUtil;
 import cn.lili.modules.permission.entity.vo.SystemLogVO;
-import cn.lili.modules.permission.service.SystemLogService;
 import cn.lili.modules.system.aspect.annotation.SystemLogPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -41,8 +40,7 @@ public class SystemLogAspect {
      */
     private static final ThreadLocal<Date> BEGIN_TIME_THREAD_LOCAL = new NamedThreadLocal<>("SYSTEM-LOG");
 
-    @Autowired
-    private SystemLogService systemLogService;
+
 
     @Autowired
     private HttpServletRequest request;
@@ -118,7 +116,7 @@ public class SystemLogAspect {
             Long usedTime = endTime - beginTime;
             systemLogVO.setCostTime(usedTime.intValue());
             //调用线程保存
-            ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(systemLogVO, systemLogService));
+            ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(systemLogVO));
 
 
             BEGIN_TIME_THREAD_LOCAL.remove();
@@ -133,18 +131,16 @@ public class SystemLogAspect {
     private static class SaveSystemLogThread implements Runnable {
         @Autowired
         private SystemLogVO systemLogVO;
-        @Autowired
-        private SystemLogService systemLogService;
 
-        public SaveSystemLogThread(SystemLogVO systemLogVO, SystemLogService systemLogService) {
+
+        public SaveSystemLogThread(SystemLogVO systemLogVO) {
             this.systemLogVO = systemLogVO;
-            this.systemLogService = systemLogService;
         }
 
         @Override
         public void run() {
             try {
-                systemLogService.saveLog(systemLogVO);
+//                systemLogService.saveLog(systemLogVO);
             } catch (Exception e) {
                 log.error("系统日志保存异常,内容{}：", systemLogVO, e);
             }

@@ -3,7 +3,6 @@ package cn.lili.consumer.timetask.handler.impl.promotion;
 import cn.lili.consumer.timetask.handler.EveryDayExecute;
 import cn.lili.modules.promotion.entity.dos.Seckill;
 import cn.lili.modules.promotion.service.SeckillService;
-import cn.lili.modules.search.service.EsGoodsIndexService;
 import cn.lili.modules.system.entity.dos.Setting;
 import cn.lili.modules.system.entity.dto.SeckillSetting;
 import cn.lili.modules.system.entity.enums.SettingEnum;
@@ -25,11 +24,6 @@ import org.springframework.stereotype.Component;
 public class PromotionEverydayExecute implements EveryDayExecute {
 
     /**
-     * ES商品索引
-     */
-    @Autowired
-    private EsGoodsIndexService esGoodsIndexService;
-    /**
      * 系统设置
      */
     @Autowired
@@ -45,12 +39,7 @@ public class PromotionEverydayExecute implements EveryDayExecute {
      */
     @Override
     public void execute() {
-        try {
-            //清除所有商品索引的无效促销活动
-            this.esGoodsIndexService.cleanInvalidPromotion();
-        } catch (Exception e) {
-            log.error("清楚商品索引中无效促销异常", e);
-        }
+
         try {
             //定时创建活动
             addSeckill();

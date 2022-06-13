@@ -1,6 +1,5 @@
 package cn.lili.modules.order.cart.entity.vo;
 
-import cn.lili.modules.distribution.entity.dos.DistributionGoods;
 import cn.lili.modules.goods.entity.dos.GoodsSku;
 import cn.lili.modules.order.cart.entity.enums.CartTypeEnum;
 import cn.lili.modules.promotion.tools.PromotionTools;
@@ -31,10 +30,6 @@ public class CartSkuVO extends CartBase implements Serializable {
      */
     private GoodsSku goodsSku;
 
-    /**
-     * 分销描述
-     */
-    private DistributionGoods distributionGoods;
 
     @ApiModelProperty(value = "购买数量")
     private Integer num;
