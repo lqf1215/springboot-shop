@@ -1,5 +1,6 @@
 package cn.lili.consumer.listener;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
@@ -10,10 +11,12 @@ import cn.lili.common.exception.RetryException;
 import cn.lili.consumer.event.GoodsCommentCompleteEvent;
 import cn.lili.modules.goods.entity.dos.*;
 import cn.lili.modules.goods.entity.dto.GoodsCompleteMessage;
+import cn.lili.modules.goods.entity.dto.GoodsParamsDTO;
 import cn.lili.modules.goods.entity.dto.GoodsSearchParams;
 import cn.lili.modules.goods.entity.enums.GoodsAuthEnum;
 import cn.lili.modules.goods.entity.enums.GoodsStatusEnum;
 import cn.lili.modules.goods.service.*;
+import cn.lili.modules.user.entity.dos.FootPrint;
 import cn.lili.modules.user.entity.dos.UserEvaluation;
 import cn.lili.modules.user.service.FootprintService;
 import cn.lili.modules.user.service.GoodsCollectionService;
@@ -23,6 +26,8 @@ import cn.lili.modules.promotion.entity.dto.search.PromotionGoodsSearchParams;
 import cn.lili.modules.promotion.entity.enums.PromotionsScopeTypeEnum;
 import cn.lili.modules.promotion.service.PromotionGoodsService;
 import cn.lili.modules.promotion.service.PromotionService;
+import cn.lili.modules.search.entity.dos.EsGoodsIndex;
+import cn.lili.modules.search.service.EsGoodsIndexService;
 import cn.lili.rocketmq.tags.GoodsTagsEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -45,7 +50,16 @@ import java.util.stream.Collectors;
 @RocketMQMessageListener(topic = "${lili.data.rocketmq.goods-topic}", consumerGroup = "${lili.data.rocketmq.goods-group}")
 public class GoodsMessageListener implements RocketMQListener<MessageExt> {
 
-
+    /**
+     * ES商品
+     */
+    @Autowired
+    private EsGoodsIndexService goodsIndexService;
+    /**
+     * 店铺
+     */
+//    @Autowired
+//    private StoreService storeService;
     /**
      * 商品
      */
@@ -56,7 +70,11 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
      */
     @Autowired
     private GoodsSkuService goodsSkuService;
-
+    /**
+     * 用户足迹
+     */
+    @Autowired
+    private FootprintService footprintService;
     /**
      * 商品收藏
      */
@@ -67,19 +85,32 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
      */
     @Autowired
     private List<GoodsCommentCompleteEvent> goodsCommentCompleteEvents;
-
+    /**
+     * 分销商品
+     */
+//    @Autowired
+//    private DistributionGoodsService distributionGoodsService;
+    /**
+     * 分销员-商品关联表
+     */
+//    @Autowired
+//    private DistributionSelectedGoodsService distributionSelectedGoodsService;
     /**
      * 分类
      */
     @Autowired
     private CategoryService categoryService;
-
+    /**
+     * 品牌
+     */
+    @Autowired
+    private BrandService brandService;
     /**
      * 店铺商品分类
      */
-    @Autowired
-    private StoreGoodsLabelService storeGoodsLabelService;
-
+//    @Autowired
+//    private StoreGoodsLabelService storeGoodsLabelService;
+//
     @Autowired
     private PromotionService promotionService;
 
@@ -93,7 +124,8 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
         switch (GoodsTagsEnum.valueOf(messageExt.getTags())) {
             //查看商品
             case VIEW_GOODS:
-
+                FootPrint footPrint = JSONUtil.toBean(new String(messageExt.getBody()), FootPrint.class);
+                footprintService.saveFootprint(footPrint);
                 break;
             //生成索引
             case GENERATOR_GOODS_INDEX:
@@ -123,15 +155,19 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
                 if (CharSequenceUtil.isEmpty(promotionKey)) {
                     break;
                 }
-
+                if (CharSequenceUtil.isNotEmpty(jsonObject.getStr("scopeId"))) {
+                    this.goodsIndexService.deleteEsGoodsPromotionByPromotionKey(Arrays.asList(jsonObject.getStr("scopeId").split(",")), promotionKey);
+                } else {
+                    this.goodsIndexService.deleteEsGoodsPromotionByPromotionKey(promotionKey);
+                }
                 break;
             case UPDATE_GOODS_INDEX:
                 try {
                     String goodsIdsJsonStr = new String(messageExt.getBody());
                     GoodsSearchParams searchParams = new GoodsSearchParams();
                     searchParams.setId(ArrayUtil.join(JSONUtil.toList(goodsIdsJsonStr, String.class).toArray(), ","));
-//                    List<Goods> goodsList = goodsService.queryListByParams(searchParams);
-//                    this.updateGoodsIndex(goodsList);
+                    List<Goods> goodsList = goodsService.queryListByParams(searchParams);
+                    this.updateGoodsIndex(goodsList);
                 } catch (Exception e) {
                     log.error("更新商品索引事件执行异常，商品信息: " + new String(messageExt.getBody()), e);
                 }
@@ -144,6 +180,7 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
                     Map<String, Object> queryFields = updateIndexFields.get("queryFields", Map.class);
                     @SuppressWarnings("unchecked")
                     Map<String, Object> updateFields = updateIndexFields.get("updateFields", Map.class);
+                    goodsIndexService.updateIndex(queryFields, updateFields);
                 } catch (Exception e) {
                     log.error("更新商品索引事件执行异常，商品信息: " + new String(messageExt.getBody()), e);
                 }
@@ -151,7 +188,8 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
             case RESET_GOODS_INDEX:
                 try {
                     String goodsIdsJsonStr = new String(messageExt.getBody());
-
+                    List<EsGoodsIndex> goodsIndices = JSONUtil.toList(goodsIdsJsonStr, EsGoodsIndex.class);
+                    goodsIndexService.updateBulkIndex(goodsIndices);
                 } catch (Exception e) {
                     log.error("重置商品索引事件执行异常，商品信息: " + new String(messageExt.getBody()), e);
                 }
@@ -159,6 +197,7 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
             //审核商品
             case GOODS_AUDIT:
                 Goods goods = JSONUtil.toBean(new String(messageExt.getBody()), Goods.class);
+                updateGoodsNum(goods);
                 updateGoodsIndex(goods);
                 break;
             //删除商品
@@ -168,8 +207,12 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
                     for (String goodsId : JSONUtil.toList(goodsIdsJsonStr, String.class)) {
                         Goods goodsById = this.goodsService.getById(goodsId);
                         if (goodsById != null) {
+                            this.deleteGoods(goodsById);
+                            this.updateGoodsNum(goodsById);
                             List<String> skuIdsByGoodsId = this.goodsSkuService.getSkuIdsByGoodsId(goodsId);
-
+                            if (skuIdsByGoodsId != null && !skuIdsByGoodsId.isEmpty()) {
+                                this.goodsIndexService.deleteIndexByIds(skuIdsByGoodsId);
+                            }
                         }
                     }
 
@@ -186,6 +229,7 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
             case STORE_GOODS_DELETE:
                 try {
                     String storeId = new String(messageExt.getBody());
+                    goodsIndexService.deleteIndex(MapUtil.builder(new HashMap<String, Object>()).put("storeId", storeId).build());
                 } catch (RetryException re) {
                     throw re;
                 } catch (Exception e) {
@@ -228,19 +272,57 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
                 searchParams.setPromotionId(promotions.getId());
                 List<PromotionGoods> promotionGoodsList = this.promotionGoodsService.listFindAll(searchParams);
                 List<String> skuIds = promotionGoodsList.stream().map(PromotionGoods::getSkuId).collect(Collectors.toList());
+                this.goodsIndexService.deleteEsGoodsPromotionByPromotionKey(skuIds, esPromotionKey);
+                this.goodsIndexService.updateEsGoodsIndexByList(promotionGoodsList, promotions, esPromotionKey);
             } else if (PromotionsScopeTypeEnum.PORTION_GOODS_CATEGORY.name().equals(promotions.getScopeType())) {
                 GoodsSearchParams searchParams = new GoodsSearchParams();
                 searchParams.setCategoryPath(promotions.getScopeId());
                 List<GoodsSku> goodsSkuByList = this.goodsSkuService.getGoodsSkuByList(searchParams);
                 List<String> skuIds = goodsSkuByList.stream().map(GoodsSku::getId).collect(Collectors.toList());
+                this.goodsIndexService.deleteEsGoodsPromotionByPromotionKey(skuIds, esPromotionKey);
+                this.goodsIndexService.updateEsGoodsIndexPromotions(skuIds, promotions, esPromotionKey);
             } else if (PromotionsScopeTypeEnum.ALL.name().equals(promotions.getScopeType())) {
+                this.goodsIndexService.deleteEsGoodsPromotionByPromotionKey(esPromotionKey);
+                this.goodsIndexService.updateEsGoodsIndexAllByList(promotions, esPromotionKey);
             }
         } catch (Exception e) {
             log.error("生成商品索引促销信息执行异常", e);
         }
     }
 
-
+    /**
+     * 更新商品索引
+     *
+     * @param goodsList 商品列表消息
+     */
+    private void updateGoodsIndex(List<Goods> goodsList) {
+        List<EsGoodsIndex> goodsIndices = new ArrayList<>();
+        for (Goods goods : goodsList) {
+            //如果商品通过审核&&并且已上架
+            GoodsSearchParams searchParams = new GoodsSearchParams();
+            searchParams.setGoodsId(goods.getId());
+            searchParams.setGeQuantity(0);
+            List<GoodsSku> goodsSkuList = this.goodsSkuService.getGoodsSkuByList(searchParams);
+            if (goods.getAuthFlag().equals(GoodsAuthEnum.PASS.name())
+                    && goods.getMarketEnable().equals(GoodsStatusEnum.UPPER.name())
+                    && Boolean.FALSE.equals(goods.getDeleteFlag())) {
+                goodsSkuList.forEach(goodsSku -> {
+                    EsGoodsIndex goodsIndex = this.settingUpGoodsIndexData(goods, goodsSku);
+                    goodsIndices.add(goodsIndex);
+                });
+            }
+            //如果商品状态值不支持es搜索，那么将商品信息做下架处理
+            else {
+                for (GoodsSku goodsSku : goodsSkuList) {
+                    EsGoodsIndex esGoodsOld = goodsIndexService.findById(goodsSku.getId());
+                    if (esGoodsOld != null) {
+                        goodsIndexService.deleteIndexById(goodsSku.getId());
+                    }
+                }
+            }
+        }
+        goodsIndexService.updateBulkIndex(goodsIndices);
+    }
 
 
     /**
@@ -273,18 +355,121 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
         if (goods.getAuthFlag().equals(GoodsAuthEnum.PASS.name())
                 && goods.getMarketEnable().equals(GoodsStatusEnum.UPPER.name())
                 && Boolean.FALSE.equals(goods.getDeleteFlag())) {
+            this.generatorGoodsIndex(goods, goodsSkuList);
         }
         //如果商品状态值不支持es搜索，那么将商品信息做下架处理
         else {
+            for (GoodsSku goodsSku : goodsSkuList) {
+                EsGoodsIndex esGoodsOld = goodsIndexService.findById(goodsSku.getId());
+                if (esGoodsOld != null) {
+                    goodsIndexService.deleteIndexById(goodsSku.getId());
+                }
+            }
+        }
+    }
 
+    /**
+     * 生成商品索引
+     *
+     * @param goods        商品信息
+     * @param goodsSkuList 商品sku信息
+     */
+    private void generatorGoodsIndex(Goods goods, List<GoodsSku> goodsSkuList) {
+        int skuSource = 100;
+        List<EsGoodsIndex> esGoodsIndices = new ArrayList<>();
+        for (GoodsSku goodsSku : goodsSkuList) {
+            EsGoodsIndex goodsIndex = this.settingUpGoodsIndexData(goods, goodsSku);
+            goodsIndex.setSkuSource(skuSource--);
+            log.info("goodsSku：{}", goodsSku);
+            //如果商品库存不为0，并且es中有数据
+            if (goodsSku.getQuantity() > 0) {
+                log.info("生成商品索引 {}", goodsIndex);
+                esGoodsIndices.add(goodsIndex);
+            }
+        }
+        this.goodsIndexService.addIndex(esGoodsIndices);
+    }
+
+    private EsGoodsIndex settingUpGoodsIndexData(Goods goods, GoodsSku goodsSku) {
+        EsGoodsIndex goodsIndex = new EsGoodsIndex(goodsSku);
+        if (goods.getParams() != null && !goods.getParams().isEmpty()) {
+            List<GoodsParamsDTO> goodsParamDTOS = JSONUtil.toList(goods.getParams(), GoodsParamsDTO.class);
+            goodsIndex = new EsGoodsIndex(goodsSku, goodsParamDTOS);
+        }
+        goodsIndex.setAuthFlag(goods.getAuthFlag());
+        goodsIndex.setMarketEnable(goods.getMarketEnable());
+        this.settingUpGoodsIndexOtherParam(goodsIndex);
+        return goodsIndex;
+    }
+
+    /**
+     * 设置商品索引的其他参数（非商品自带）
+     *
+     * @param goodsIndex 商品索引信息
+     */
+    private void settingUpGoodsIndexOtherParam(EsGoodsIndex goodsIndex) {
+        List<Category> categories = categoryService.listByIdsOrderByLevel(Arrays.asList(goodsIndex.getCategoryPath().split(",")));
+        if (!categories.isEmpty()) {
+            goodsIndex.setCategoryNamePath(ArrayUtil.join(categories.stream().map(Category::getName).toArray(), ","));
+        }
+        Brand brand = brandService.getById(goodsIndex.getBrandId());
+        if (brand != null) {
+            goodsIndex.setBrandName(brand.getName());
+            goodsIndex.setBrandUrl(brand.getLogo());
+        }
+//        if (goodsIndex.getStoreCategoryPath() != null && CharSequenceUtil.isNotEmpty(goodsIndex.getStoreCategoryPath())) {
+//            List<StoreGoodsLabel> storeGoodsLabels = storeGoodsLabelService.listByStoreIds(Arrays.asList(goodsIndex.getStoreCategoryPath().split(",")));
+//            if (!storeGoodsLabels.isEmpty()) {
+//                goodsIndex.setStoreCategoryNamePath(ArrayUtil.join(storeGoodsLabels.stream().map(StoreGoodsLabel::getLabelName).toArray(), ","));
+//            }
+//        }
+
+        if (goodsIndex.getOriginPromotionMap() == null || goodsIndex.getOriginPromotionMap().isEmpty()) {
+            Map<String, Object> goodsCurrentPromotionMap = promotionService.getGoodsSkuPromotionMap(goodsIndex.getStoreId(), goodsIndex.getId());
+            goodsIndex.setPromotionMapJson(JSONUtil.toJsonStr(goodsCurrentPromotionMap));
         }
     }
 
 
+    /**
+     * 删除商品
+     * 1.更新店铺的商品数量
+     * 2.删除分销员-分销商品绑定关系
+     * 3.删除分销商品
+     *
+     * @param goods 消息
+     */
+    private void deleteGoods(Goods goods) {
 
+//        DistributionGoodsSearchParams searchParams = new DistributionGoodsSearchParams();
+//        searchParams.setGoodsId(goods.getId());
+//        //删除获取分销商品
+//        DistributionGoods distributionGoods = distributionGoodsService.getDistributionGoods(searchParams);
+//
+//        if (distributionGoods != null) {
+//
+//            //删除分销商品绑定关系
+//            distributionSelectedGoodsService.deleteByDistributionGoodsId(distributionGoods.getId());
+//
+//            //删除分销商品
+//            distributionGoodsService.removeById(distributionGoods.getId());
+//        }
+    }
 
-
-
+    /**
+     * 修改商品数量
+     *
+     * @param goods 信息体
+     */
+    private void updateGoodsNum(Goods goods) {
+        try {
+            //更新店铺商品数量
+            assert goods != null;
+//            storeService.updateStoreGoodsNum(goods.getStoreId());
+        } catch (Exception e) {
+            log.error("修改商品数量错误");
+        }
+    }
 
     /**
      * 商品购买完成
@@ -319,7 +504,9 @@ public class GoodsMessageListener implements RocketMQListener<MessageExt> {
                 goodsSku.setBuyCount(buyCount);
                 goodsSkuService.update(goodsSku);
 
-
+                this.goodsIndexService.updateIndex(
+                        MapUtil.builder(new HashMap<String, Object>()).put("id", goodsCompleteMessage.getSkuId()).build(),
+                        MapUtil.builder(new HashMap<String, Object>()).put("buyCount", buyCount).build());
 
             } else {
                 log.error("商品SkuId为[" + goodsCompleteMessage.getGoodsId() + "的商品不存在，更新商品失败！");

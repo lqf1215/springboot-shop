@@ -82,7 +82,7 @@ public class MemberMessageListener implements RocketMQListener<MessageExt> {
                 for (MemberLoginEvent memberLoginEvent : memberLoginEvents) {
                     try {
                         User user = JSONUtil.toBean(new String(messageExt.getBody()), User.class);
-                        memberLoginEvent.memberLogin(user);
+//                        memberLoginEvent.memberLogin(user);
                     } catch (Exception e) {
                         log.error("会员{},在{}业务中，状态修改事件执行异常",
                                 new String(messageExt.getBody()),

@@ -49,7 +49,7 @@ public class Recharge extends BaseIdEntity {
     private String rechargeSn;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;
@@ -85,7 +85,7 @@ public class Recharge extends BaseIdEntity {
      * @param userName 会员名称
      * @param money      充值金额
      */
-    public Recharge(String rechargeSn, String userId, String userName, Double money) {
+    public Recharge(String rechargeSn, Long userId, String userName, Double money) {
         this.rechargeSn = rechargeSn;
         this.userId = userId;
         this.userName = userName;

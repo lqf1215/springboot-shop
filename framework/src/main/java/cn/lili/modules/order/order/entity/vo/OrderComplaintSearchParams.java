@@ -26,7 +26,7 @@ public class OrderComplaintSearchParams {
     private String orderSn;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;
@@ -54,7 +54,7 @@ public class OrderComplaintSearchParams {
         if (StrUtil.isNotEmpty(userName)) {
             queryWrapper.like(OrderComplaint::getUserName, userName);
         }
-        if (StrUtil.isNotEmpty(userId)) {
+        if (StrUtil.isNotEmpty(""+userId)) {
             queryWrapper.eq(OrderComplaint::getUserId, userId);
         }
         queryWrapper.eq(OrderComplaint::getDeleteFlag, false);

@@ -26,7 +26,7 @@ public class UserAddress extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "会员ID", hidden = true)
-    private Integer userId;
+    private Long userId;
 
     @NotEmpty(message = "收货人姓名不能为空")
     @ApiModelProperty(value = "收货人姓名")

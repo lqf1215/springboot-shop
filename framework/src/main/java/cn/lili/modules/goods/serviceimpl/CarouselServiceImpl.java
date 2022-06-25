@@ -1,10 +1,11 @@
 package cn.lili.modules.goods.serviceimpl;
 
 import cn.lili.modules.goods.entity.dos.Carousel;
-import cn.lili.modules.goods.entity.dto.*;
+import cn.lili.modules.goods.entity.dto.CarouselDTO;
+import cn.lili.modules.goods.entity.dto.CarouselSearchParams;
 import cn.lili.modules.goods.entity.vos.CarouselVO;
 import cn.lili.modules.goods.mapper.CarouselMapper;
-import cn.lili.modules.goods.service.*;
+import cn.lili.modules.goods.service.CarouselService;
 import cn.lili.mybatis.util.PageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -12,7 +13,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 轮播业务层实现

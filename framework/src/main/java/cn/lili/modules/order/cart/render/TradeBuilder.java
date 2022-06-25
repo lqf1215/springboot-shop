@@ -124,15 +124,10 @@ public class TradeBuilder {
     private void renderCartBySteps(TradeDTO tradeDTO, RenderStepEnums[] defaultRender) {
         for (RenderStepEnums step : defaultRender) {
             for (CartRenderStep render : cartRenderSteps) {
-
-
                 try {
-                    if(step==RenderStepEnums.CHECK_DATA ||step==RenderStepEnums.CHECKED_FILTER||step==RenderStepEnums.SKU_PROMOTION||step==RenderStepEnums.CART_PRICE||step==RenderStepEnums.CART_SN){
-
-                        if (render.step().equals(step)) {
+                    if (render.step().equals(step)) {
                         render.render(tradeDTO);
                     }
-                }
                 } catch (ServiceException e) {
                     throw e;
                 } catch (Exception e) {

@@ -30,7 +30,7 @@ public class WalletLogServiceImpl extends ServiceImpl<WalletLogMapper, WalletLog
         //会员名称
         depositLogQueryWrapper.like(!CharSequenceUtil.isEmpty(depositQueryVO.getUserName()), "user_name", depositQueryVO.getUserName());
         //会员id
-        depositLogQueryWrapper.eq(!CharSequenceUtil.isEmpty(depositQueryVO.getUserId()), "user_id", depositQueryVO.getUserId());
+        depositLogQueryWrapper.eq(!CharSequenceUtil.isEmpty(""+depositQueryVO.getUserId()), "user_id", depositQueryVO.getUserId());
         //开始时间和技术时间
         if (!CharSequenceUtil.isEmpty(depositQueryVO.getStartDate()) && !CharSequenceUtil.isEmpty(depositQueryVO.getEndDate())) {
             Date start = cn.hutool.core.date.DateUtil.parse(depositQueryVO.getStartDate());

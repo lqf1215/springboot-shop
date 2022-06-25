@@ -48,16 +48,16 @@ public class FreightTemplateServiceImpl extends ServiceImpl<FreightTemplateMappe
 
 
     @Override
-    public List<FreightTemplateVO> getFreightTemplateList() {
+    public List<FreightTemplateVO> getFreightTemplateList(String storeId) {
         //先从缓存中获取运费模板，如果有则直接返回，如果没有则查询数据后再返回
-        List<FreightTemplateVO> list = (List<FreightTemplateVO>) cache.get(CachePrefix.SHIP_TEMPLATE_ALL.getPrefix());
+        List<FreightTemplateVO> list = (List<FreightTemplateVO>) cache.get(CachePrefix.SHIP_TEMPLATE.getPrefix());
         if (list != null) {
             return list;
         }
         list = new ArrayList<>();
         //查询运费模板
         LambdaQueryWrapper<FreightTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
-
+//        lambdaQueryWrapper.eq(FreightTemplate::getStoreId, storeId);
         List<FreightTemplate> freightTemplates = this.baseMapper.selectList(lambdaQueryWrapper);
         if (!freightTemplates.isEmpty()) {
             //如果模板不为空则查询子模板信息
@@ -71,11 +71,105 @@ public class FreightTemplateServiceImpl extends ServiceImpl<FreightTemplateMappe
                 list.add(freightTemplateVO);
             }
         }
-        cache.put(CachePrefix.SHIP_TEMPLATE_ALL.getPrefix(), list);
+        cache.put(CachePrefix.SHIP_TEMPLATE.getPrefix() , list);
         return list;
 
     }
 
+    @Override
+    public IPage<FreightTemplate> getFreightTemplate(PageVO pageVo) {
+        LambdaQueryWrapper<FreightTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
+//        lambdaQueryWrapper.eq(FreightTemplate::getStoreId, UserContext.getCurrentUser().getStoreId());
+        return this.baseMapper.selectPage(PageUtil.initPage(pageVo), lambdaQueryWrapper);
+    }
+
+    @Override
+    public FreightTemplateVO getFreightTemplate(String id) {
+        FreightTemplateVO freightTemplateVO = new FreightTemplateVO();
+        //获取运费模板
+        FreightTemplate freightTemplate = this.getById(id);
+        if (freightTemplate != null) {
+            //复制属性
+            BeanUtils.copyProperties(freightTemplate, freightTemplateVO);
+            //填写运费模板子内容
+            List<FreightTemplateChild> freightTemplateChildList = freightTemplateChildService.getFreightTemplateChild(id);
+            freightTemplateVO.setFreightTemplateChildList(freightTemplateChildList);
+        }
+        return freightTemplateVO;
+    }
+
+    @Override
+    public FreightTemplateVO addFreightTemplate(FreightTemplateVO freightTemplateVO) {
+        //获取当前登录商家账号
+//        AuthUser tokenUser = UserContext.getCurrentUser();
+        FreightTemplate freightTemplate = new FreightTemplate();
+        //设置店铺ID
+//        freightTemplateVO.setStoreId(tokenUser.getStoreId());
+        //复制属性
+        BeanUtils.copyProperties(freightTemplateVO, freightTemplate);
+        //添加运费模板
+        this.save(freightTemplate);
+        //给子模板赋父模板的id
+        List<FreightTemplateChild> list = new ArrayList<>();
+        //如果子运费模板不为空则进行新增
+        if (freightTemplateVO.getFreightTemplateChildList() != null) {
+            for (FreightTemplateChild freightTemplateChild : freightTemplateVO.getFreightTemplateChildList()) {
+                freightTemplateChild.setFreightTemplateId(freightTemplate.getId());
+                list.add(freightTemplateChild);
+            }
+            //添加运费模板子内容
+            freightTemplateChildService.addFreightTemplateChild(list);
+        }
+
+        //更新缓存
+        cache.remove(CachePrefix.SHIP_TEMPLATE.getPrefix() );
+        return freightTemplateVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public FreightTemplateVO editFreightTemplate(FreightTemplateVO freightTemplateVO) {
+        //获取当前登录商家账号
+//        AuthUser tokenUser = UserContext.getCurrentUser();
+//        if (freightTemplateVO.getId().equals(tokenUser.getStoreId())) {
+//            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
+//        }
+        FreightTemplate freightTemplate = new FreightTemplate();
+        //复制属性
+        BeanUtils.copyProperties(freightTemplateVO, freightTemplate);
+        //修改运费模板
+        this.updateById(freightTemplate);
+        //删除模板子内容
+        freightTemplateChildService.removeFreightTemplate(freightTemplateVO.getId());
+        //给子模板赋父模板的id
+        List<FreightTemplateChild> list = new ArrayList<>();
+        for (FreightTemplateChild freightTemplateChild : freightTemplateVO.getFreightTemplateChildList()) {
+            freightTemplateChild.setFreightTemplateId(freightTemplate.getId());
+            list.add(freightTemplateChild);
+        }
+        //添加模板子内容
+        freightTemplateChildService.addFreightTemplateChild(list);
+        //更新缓存
+        cache.remove(CachePrefix.SHIP_TEMPLATE.getPrefix());
+        return null;
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeFreightTemplate(String id) {
+        //获取当前登录商家账号
+//        AuthUser tokenUser = UserContext.getCurrentUser();
+        LambdaQueryWrapper<FreightTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
+//        lambdaQueryWrapper.eq(FreightTemplate::getStoreId, tokenUser.getStoreId());
+        lambdaQueryWrapper.eq(FreightTemplate::getId, id);
+        //如果删除成功则删除运费模板子项
+        if (this.remove(lambdaQueryWrapper)) {
+            cache.remove(CachePrefix.SHIP_TEMPLATE.getPrefix() );
+            return freightTemplateChildService.removeFreightTemplate(id);
+        }
+        return false;
+    }
 
     @Override
     public List<FreightTemplateVO> getAllFreightTemplateList() {
@@ -104,100 +198,5 @@ public class FreightTemplateServiceImpl extends ServiceImpl<FreightTemplateMappe
         return list;
 
     }
-
-    @Override
-    public IPage<FreightTemplate> getFreightTemplate(PageVO pageVo) {
-        LambdaQueryWrapper<FreightTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
-        lambdaQueryWrapper.eq(FreightTemplate::getStoreId, UserContext.getCurrentUser().getStoreId());
-        return this.baseMapper.selectPage(PageUtil.initPage(pageVo), lambdaQueryWrapper);
-    }
-
-    @Override
-    public FreightTemplateVO getFreightTemplate(String id) {
-        FreightTemplateVO freightTemplateVO = new FreightTemplateVO();
-        //获取运费模板
-        FreightTemplate freightTemplate = this.getById(id);
-        if (freightTemplate != null) {
-            //复制属性
-            BeanUtils.copyProperties(freightTemplate, freightTemplateVO);
-            //填写运费模板子内容
-            List<FreightTemplateChild> freightTemplateChildList = freightTemplateChildService.getFreightTemplateChild(id);
-            freightTemplateVO.setFreightTemplateChildList(freightTemplateChildList);
-        }
-        return freightTemplateVO;
-    }
-
-    @Override
-    public FreightTemplateVO addFreightTemplate(FreightTemplateVO freightTemplateVO) {
-//        //获取当前登录商家账号
-//        AuthUser tokenUser = UserContext.getCurrentUser();
-        FreightTemplate freightTemplate = new FreightTemplate();
-
-        //复制属性
-        BeanUtils.copyProperties(freightTemplateVO, freightTemplate);
-        //添加运费模板
-        this.save(freightTemplate);
-        //给子模板赋父模板的id
-        List<FreightTemplateChild> list = new ArrayList<>();
-        //如果子运费模板不为空则进行新增
-        if (freightTemplateVO.getFreightTemplateChildList() != null) {
-            for (FreightTemplateChild freightTemplateChild : freightTemplateVO.getFreightTemplateChildList()) {
-                freightTemplateChild.setFreightTemplateId(freightTemplate.getId());
-                list.add(freightTemplateChild);
-            }
-            //添加运费模板子内容
-            freightTemplateChildService.addFreightTemplateChild(list);
-        }
-
-        //更新缓存
-        cache.remove(CachePrefix.SHIP_TEMPLATE.getPrefix() );
-        return freightTemplateVO;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public FreightTemplateVO editFreightTemplate(FreightTemplateVO freightTemplateVO) {
-//        //获取当前登录商家账号
-//        AuthUser tokenUser = UserContext.getCurrentUser();
-//        if (freightTemplateVO.getId().equals(tokenUser.getStoreId())) {
-//            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
-//        }
-        FreightTemplate freightTemplate = new FreightTemplate();
-        //复制属性
-        BeanUtils.copyProperties(freightTemplateVO, freightTemplate);
-        //修改运费模板
-        this.updateById(freightTemplate);
-        //删除模板子内容
-        freightTemplateChildService.removeFreightTemplate(freightTemplateVO.getId());
-        //给子模板赋父模板的id
-        List<FreightTemplateChild> list = new ArrayList<>();
-        for (FreightTemplateChild freightTemplateChild : freightTemplateVO.getFreightTemplateChildList()) {
-            freightTemplateChild.setFreightTemplateId(freightTemplate.getId());
-            list.add(freightTemplateChild);
-        }
-        //添加模板子内容
-        freightTemplateChildService.addFreightTemplateChild(list);
-        //更新缓存
-        cache.remove(CachePrefix.SHIP_TEMPLATE_ALL.getPrefix() );
-        return null;
-    }
-
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean removeFreightTemplate(String id) {
-        //获取当前登录商家账号
-//        AuthUser tokenUser = UserContext.getCurrentUser();
-        LambdaQueryWrapper<FreightTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
-//        lambdaQueryWrapper.eq(FreightTemplate::getStoreId, tokenUser.getStoreId());
-        lambdaQueryWrapper.eq(FreightTemplate::getId, id);
-        //如果删除成功则删除运费模板子项
-        if (this.remove(lambdaQueryWrapper)) {
-            cache.remove(CachePrefix.SHIP_TEMPLATE_ALL.getPrefix() );
-            return freightTemplateChildService.removeFreightTemplate(id);
-        }
-        return false;
-    }
-
 
 }

@@ -7,7 +7,6 @@ import cn.lili.modules.order.order.entity.dos.Order;
 import cn.lili.modules.order.order.entity.dos.OrderItem;
 import cn.lili.modules.order.order.service.OrderItemService;
 import cn.lili.modules.order.order.service.OrderService;
-import cn.lili.modules.order.order.service.StoreFlowService;
 import cn.lili.modules.payment.entity.RefundLog;
 import cn.lili.modules.payment.entity.enums.PaymentMethodEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +27,8 @@ public class RefundSupport {
     /**
      * 店铺流水
      */
-    @Autowired
-    private StoreFlowService storeFlowService;
+//    @Autowired
+//    private StoreFlowService storeFlowService;
     /**
      * 订单
      */
@@ -67,7 +66,7 @@ public class RefundSupport {
         this.updateReturnGoodsNumber(afterSale);
 
         //记录退款流水
-        storeFlowService.refundOrder(afterSale);
+//        storeFlowService.refundOrder(afterSale);
     }
 
     /**

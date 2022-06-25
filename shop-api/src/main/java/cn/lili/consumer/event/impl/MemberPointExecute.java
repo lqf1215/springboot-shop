@@ -61,7 +61,7 @@ public class MemberPointExecute implements MemberRegisterEvent, GoodsCommentComp
         //获取积分设置
         PointSetting pointSetting = getPointSetting();
         //赠送会员积分
-        userService.updateMemberPoint(pointSetting.getRegister().longValue(), PointTypeEnum.INCREASE.name(), ""+user.getId(), "会员注册，赠送积分" + pointSetting.getRegister() + "分");
+        userService.updateMemberPoint(pointSetting.getRegister().longValue(), PointTypeEnum.INCREASE.name(), user.getId(), "会员注册，赠送积分" + pointSetting.getRegister() + "分");
     }
 
     /**
@@ -98,7 +98,7 @@ public class MemberPointExecute implements MemberRegisterEvent, GoodsCommentComp
                 }
                 String content = "订单取消，积分返还：" + point + "分";
                 //赠送会员积分
-                userService.updateMemberPoint(point, PointTypeEnum.INCREASE.name(), order.getUserId()+"", content);
+                userService.updateMemberPoint(point, PointTypeEnum.INCREASE.name(), order.getUserId(), content);
                 break;
             }
             case COMPLETED: {
@@ -116,7 +116,7 @@ public class MemberPointExecute implements MemberRegisterEvent, GoodsCommentComp
                 //计算赠送积分数量
                 Double point = CurrencyUtil.mul(pointSetting.getConsumer(), order.getFlowPrice(), 0);
                 //赠送会员积分
-                userService.updateMemberPoint(point.longValue(), PointTypeEnum.INCREASE.name(), order.getUserId()+"", "会员下单，赠送积分" + point + "分");
+                userService.updateMemberPoint(point.longValue(), PointTypeEnum.INCREASE.name(), order.getUserId(), "会员下单，赠送积分" + point + "分");
                 break;
             }
 

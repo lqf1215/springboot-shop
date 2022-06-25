@@ -155,9 +155,9 @@ public class PageDataServiceImpl extends ServiceImpl<PageDataMapper, PageData> i
     public PageDataVO getPageData(PageDataDTO pageDataDTO) {
 
         //如果获取的是专题、店铺页面数据需要传入ID
-//        if (!pageDataDTO.getPageType().equals(PageEnum.INDEX.name()) && pageDataDTO.getNum() == null) {
-//            throw new ServiceException(ResultCode.PAGE_NOT_EXIST);
-//        }
+        if (!pageDataDTO.getPageType().equals(PageEnum.INDEX.name()) && pageDataDTO.getNum() == null) {
+            throw new ServiceException(ResultCode.PAGE_NOT_EXIST);
+        }
         QueryWrapper<PageDataVO> queryWrapper = Wrappers.query();
         queryWrapper.eq(pageDataDTO.getPageType() != null, "page_type", pageDataDTO.getPageType());
         queryWrapper.eq(pageDataDTO.getNum() != null, "num", pageDataDTO.getNum());

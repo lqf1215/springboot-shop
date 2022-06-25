@@ -32,13 +32,6 @@ public class MemberEvaluationManagerController {
     @Autowired
     private UserEvaluationService userEvaluationService;
 
-
-    @ApiOperation(value = "分页获取会员评论列表")
-    @GetMapping
-    public ResultMessage<IPage<UserEvaluationListVO>> getByPage(EvaluationQueryParams evaluationQueryParams) {
-        return ResultUtil.data(userEvaluationService.queryPage(evaluationQueryParams));
-    }
-
     @PreventDuplicateSubmissions
     @ApiOperation(value = "通过id获取评论")
     @ApiImplicitParam(name = "id", value = "评价ID", required = true, dataType = "String", paramType = "path")
@@ -74,6 +67,7 @@ public class MemberEvaluationManagerController {
         userEvaluationService.delete(id);
         return ResultUtil.success();
     }
+
     @ApiOperation(value = "回复评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "评价ID", required = true, dataType = "String", paramType = "path"),
@@ -86,4 +80,5 @@ public class MemberEvaluationManagerController {
         userEvaluationService.reply(id, reply, replyImage);
         return ResultUtil.success();
     }
+
 }

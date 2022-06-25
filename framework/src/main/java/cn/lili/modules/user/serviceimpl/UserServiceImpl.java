@@ -3,16 +3,20 @@ package cn.lili.modules.user.serviceimpl;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.lili.cache.Cache;
+import cn.lili.cache.CachePrefix;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.enums.SwitchEnum;
 import cn.lili.common.exception.ServiceException;
 import cn.lili.common.properties.RocketmqCustomProperties;
 import cn.lili.common.security.AuthUser;
 import cn.lili.common.security.context.UserContext;
+import cn.lili.common.security.enums.UserEnums;
+import cn.lili.common.security.token.Token;
 import cn.lili.common.utils.BeanUtil;
-import cn.lili.common.utils.SnowFlake;
 import cn.lili.common.vo.PageVO;
+
 import cn.lili.modules.user.aop.annotation.PointLogPoint;
+
 import cn.lili.modules.user.entity.dos.User;
 import cn.lili.modules.user.entity.dto.*;
 import cn.lili.modules.user.entity.enums.PointTypeEnum;
@@ -20,12 +24,11 @@ import cn.lili.modules.user.entity.vo.UserSearchVO;
 import cn.lili.modules.user.entity.vo.UserVO;
 import cn.lili.modules.user.mapper.UserMapper;
 import cn.lili.modules.user.service.UserService;
+import cn.lili.modules.user.token.UserTokenGenerate;
 import cn.lili.mybatis.util.PageUtil;
 import cn.lili.rocketmq.RocketmqSendCallbackBuilder;
 import cn.lili.rocketmq.tags.MemberTagsEnum;
-import com.alipay.api.domain.UserVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -34,10 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 会员接口业务层实现
@@ -48,8 +49,26 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-
-
+    /**
+     * 会员token
+     */
+    @Autowired
+    private UserTokenGenerate userTokenGenerate;
+    /**
+     * 商家token
+     */
+//    @Autowired
+//    private StoreTokenGenerate storeTokenGenerate;
+    /**
+     * 联合登录
+     */
+//    @Autowired
+//    private ConnectService connectService;
+    /**
+     * 店铺
+     */
+//    @Autowired
+//    private StoreService storeService;
     /**
      * RocketMQ 配置
      */
@@ -60,7 +79,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
-
+    /**
+     * 缓存
+     */
+    @Autowired
+    private Cache cache;
 
     @Override
     public User findByUsername(String userName) {
@@ -79,10 +102,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         throw new ServiceException(ResultCode.USER_NOT_LOGIN);
     }
 
+
     @Override
     public UserVO getUserInfo(Integer userId) {
         return this.baseMapper.getUserInfo(userId);
     }
+
+    @Override
+    public boolean findByMobile(String uuid, String mobile) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile", mobile);
+        User user = this.baseMapper.selectOne(queryWrapper);
+        if (user == null) {
+            throw new ServiceException(ResultCode.USER_NOT_PHONE);
+        }
+        cache.put(CachePrefix.FIND_MOBILE + uuid, mobile, 300L);
+
+        return true;
+    }
+
+
 
 
     /**
@@ -98,23 +137,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
-    /**
-     * 注册方法抽象
-     *
-     * @param user
-     */
-    private void registerHandler(User user) {
-        user.setId(Integer.valueOf(SnowFlake.getIdStr()));
-        //保存会员
-        this.save(user);
-        String destination = rocketmqCustomProperties.getMemberTopic() + ":" + MemberTagsEnum.MEMBER_REGISTER.name();
-        rocketMQTemplate.asyncSend(destination, user, RocketmqSendCallbackBuilder.commonCallback());
+
+
+    @Override
+    public Token refreshToken(String refreshToken) {
+        return userTokenGenerate.refreshToken(refreshToken);
     }
+
+
+
+
 
     @Override
     public User editOwn(UserEditDTO userEditDTO) {
         //查询会员信息
-        User user = this.findByUsername(Objects.requireNonNull(UserContext.getCurrentUser()).getUsername());
+        User user = this.findByUsername("hello");
         //传递修改会员信息
         BeanUtil.copyProperties(userEditDTO, user);
         //修改会员
@@ -125,21 +162,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
 
-
-
-
     @Override
     public IPage<UserVO> getMemberPage(UserSearchVO userSearchVO, PageVO page) {
         QueryWrapper<User> queryWrapper = Wrappers.query();
         //用户名查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "username", userSearchVO.getUsername());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "name", userSearchVO.getUsername());
         //用户名查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getNickName()), "nick_name", userSearchVO.getNickName());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getNickName()), "name", userSearchVO.getNickName());
         //按照电话号码查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getMobile()), "mobile", userSearchVO.getMobile());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getMobile()), "phone", userSearchVO.getMobile());
         //按照会员状态查询
-        queryWrapper.eq(CharSequenceUtil.isNotBlank(userSearchVO.getDisabled()), "disabled",
-                userSearchVO.getDisabled().equals(SwitchEnum.OPEN.name()) ? 1 : 0);
+//        queryWrapper.eq(CharSequenceUtil.isNotBlank(userSearchVO.getDisabled()), "disabled",
+//                userSearchVO.getDisabled().equals(SwitchEnum.OPEN.name()) ? 1 : 0);
         queryWrapper.orderByDesc("create_time");
         return this.baseMapper.pageByMemberVO(PageUtil.initPage(page), queryWrapper);
     }
@@ -147,7 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @PointLogPoint
     @Transactional(rollbackFor = Exception.class)
-    public Boolean updateMemberPoint(Long point, String type, String userId, String content) {
+    public Boolean updateMemberPoint(Long point, String type, Long userId, String content) {
         //获取当前会员信息
         User user = this.getById(userId);
         if (user != null) {
@@ -199,15 +233,118 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return this.baseMapper.selectCount(queryWrapper);
     }
 
+    /**
+     * 获取cookie中的联合登录对象
+     *
+     * @param uuid uuid
+     * @param type 状态
+     * @return cookie中的联合登录对象
+     */
+//    private ConnectAuthUser getConnectAuthUser(String uuid, String type) {
+//        Object context = cache.get(ConnectService.cacheKey(type, uuid));
+//        if (context != null) {
+//            return (ConnectAuthUser) context;
+//        }
+//        return null;
+//    }
+
+    /**
+     * 成功登录，则检测cookie中的信息，进行会员绑定
+     *
+     * @param user  会员
+     * @param unionId unionId
+     * @param type    状态
+     */
+//    private void loginBindUser(User user, String unionId, String type) {
+//        Connect connect = connectService.queryConnect(
+//                ConnectQueryDTO.builder().unionId(unionId).unionType(type).build()
+//        );
+//        if (connect == null) {
+//            connect = new Connect(user.getId(), unionId, type);
+//            connectService.save(connect);
+//        }
+//    }
+
+    /**
+     * 成功登录，则检测cookie中的信息，进行会员绑定
+     *
+     * @param user 会员
+     */
+//    private void loginBindUser(User user) {
+//        //获取cookie存储的信息
+//        String uuid = CookieUtil.getCookie(ConnectService.CONNECT_COOKIE, ThreadContextHolder.getHttpRequest());
+//        String connectType = CookieUtil.getCookie(ConnectService.CONNECT_TYPE, ThreadContextHolder.getHttpRequest());
+//        //如果联合登陆存储了信息
+//        if (CharSequenceUtil.isNotEmpty(uuid) && CharSequenceUtil.isNotEmpty(connectType)) {
+//            try {
+//                //获取信息
+//                ConnectAuthUser connectAuthUser = getConnectAuthUser(uuid, connectType);
+//                if (connectAuthUser == null) {
+//                    return;
+//                }
+//                Connect connect = connectService.queryConnect(
+//                        ConnectQueryDTO.builder().unionId(connectAuthUser.getUuid()).unionType(connectType).build()
+//                );
+//                if (connect == null) {
+//                    connect = new Connect(user.getId(), connectAuthUser.getUuid(), connectType);
+//                    connectService.save(connect);
+//                }
+//            } catch (ServiceException e) {
+//                throw e;
+//            } catch (Exception e) {
+//                log.error("绑定第三方联合登陆失败：", e);
+//            } finally {
+//                //联合登陆成功与否，都清除掉cookie中的信息
+//                CookieUtil.delCookie(ConnectService.CONNECT_COOKIE, ThreadContextHolder.getHttpResponse());
+//                CookieUtil.delCookie(ConnectService.CONNECT_TYPE, ThreadContextHolder.getHttpResponse());
+//            }
+//        }
+//
+//    }
 
 
-
+    /**
+     * 检测是否可以绑定第三方联合登陆
+     * 返回null原因
+     * 包含原因1：redis中已经没有联合登陆信息  2：已绑定其他账号
+     *
+     * @return 返回对象则代表可以进行绑定第三方会员，返回null则表示联合登陆无法继续
+     */
+//    private ConnectAuthUser checkConnectUser() {
+//        //获取cookie存储的信息
+//        String uuid = CookieUtil.getCookie(ConnectService.CONNECT_COOKIE, ThreadContextHolder.getHttpRequest());
+//        String connectType = CookieUtil.getCookie(ConnectService.CONNECT_TYPE, ThreadContextHolder.getHttpRequest());
+//
+//        //如果联合登陆存储了信息
+//        if (CharSequenceUtil.isNotEmpty(uuid) && CharSequenceUtil.isNotEmpty(connectType)) {
+//            //枚举 联合登陆类型获取
+//            ConnectAuthEnum authInterface = ConnectAuthEnum.valueOf(connectType);
+//
+//            ConnectAuthUser connectAuthUser = getConnectAuthUser(uuid, connectType);
+//            if (connectAuthUser == null) {
+//                throw new ServiceException(ResultCode.USER_OVERDUE_CONNECT_ERROR);
+//            }
+//            //检测是否已经绑定过用户
+//            Connect connect = connectService.queryConnect(
+//                    ConnectQueryDTO.builder().unionType(connectType).unionId(connectAuthUser.getUuid()).build()
+//            );
+//            //没有关联则返回true，表示可以继续绑定
+//            if (connect == null) {
+//                connectAuthUser.setConnectEnum(authInterface);
+//                return connectAuthUser;
+//            } else {
+//                throw new ServiceException(ResultCode.USER_CONNECT_BANDING_ERROR);
+//            }
+//        } else {
+//            throw new ServiceException(ResultCode.USER_CONNECT_NOT_EXIST_ERROR);
+//        }
+//    }
 
     @Override
     public long getMemberNum(UserSearchVO userSearchVO) {
         QueryWrapper<User> queryWrapper = Wrappers.query();
         //用户名查询
-        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "name", userSearchVO.getUsername());
+        queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getUsername()), "username", userSearchVO.getUsername());
         //按照电话号码查询
         queryWrapper.like(CharSequenceUtil.isNotBlank(userSearchVO.getMobile()), "phone", userSearchVO.getMobile());
         //按照状态查询
@@ -221,17 +358,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * 获取指定会员数据
      *
      * @param columns   指定获取的列
-     * @param userIds 会员ids
+     * @param memberIds 会员ids
      * @return 指定会员数据
      */
     @Override
-    public List<Map<String, Object>> listFieldsByMemberIds(String columns, List<String> userIds) {
+    public List<Map<String, Object>> listFieldsByMemberIds(String columns, List<String> memberIds) {
         return this.listMaps(new QueryWrapper<User>()
                 .select(columns)
-                .in(userIds != null && !userIds.isEmpty(), "id", userIds));
+                .in(memberIds != null && !memberIds.isEmpty(), "id", memberIds));
     }
 
-
+    /**
+     * 登出
+     */
+    @Override
+    public void logout(UserEnums userEnums) {
+        String currentUserToken = UserContext.getCurrentUserToken();
+        if (CharSequenceUtil.isNotEmpty(currentUserToken)) {
+            cache.remove(CachePrefix.ACCESS_TOKEN.getPrefix(userEnums) + currentUserToken);
+        }
+    }
 
     /**
      * 获取所有会员的手机号
@@ -243,24 +389,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return this.baseMapper.getAllMemberMobile();
     }
 
-    /**
-     * 更新会员登录时间为最新时间
-     *
-     * @param userId 会员id
-     * @return 是否更新成功
-     */
-    @Override
-    public boolean updateMemberLoginTime(String userId) {
-        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(User::getId, userId);
-        updateWrapper.set(User::getUpdateTime, new Date());
-        return this.update(updateWrapper);
-    }
+
 
     @Override
     public UserVO getMember(String id) {
         return new UserVO(this.getById(id));
     }
 
-
+    /**
+     * 检测会员
+     *
+     * @param userName    会员名称
+     * @param mobilePhone 手机号
+     */
+    private void checkMember(String userName, String mobilePhone) {
+        //判断手机号是否存在
+        if (findMember(userName, mobilePhone) > 0) {
+            throw new ServiceException(ResultCode.USER_EXIST);
+        }
+    }
 }

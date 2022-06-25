@@ -32,7 +32,7 @@ public class WalletLog extends BaseIdEntity {
     private static final long serialVersionUID = -1599270544927161096L;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;
@@ -62,6 +62,8 @@ public class WalletLog extends BaseIdEntity {
     @ApiModelProperty(value = "创建时间", hidden = true)
     private Date createTime;
 
+    private Double integral;
+
     /**
      * 构建新的预存款日志对象
      *
@@ -89,6 +91,24 @@ public class WalletLog extends BaseIdEntity {
         this.setMoney(isReduce ? -memberWalletUpdateDTO.getMoney() : memberWalletUpdateDTO.getMoney());
         this.setDetail(memberWalletUpdateDTO.getDetail());
         this.setServiceType(memberWalletUpdateDTO.getServiceType());
+    }
+
+
+    /**
+     * 构建新的预存款日志对象
+     *
+     * @param userName            会员名称
+     * @param memberWalletUpdateDTO 变动模型
+     * @param isReduce              是否是消费
+     * @param  integral  积分
+     */
+    public WalletLog(String userName, MemberWalletUpdateDTO memberWalletUpdateDTO, boolean isReduce,Double integral) {
+        this.setUserId(memberWalletUpdateDTO.getUserId());
+        this.setUserName(userName);
+        this.setMoney(isReduce ? -memberWalletUpdateDTO.getMoney() : memberWalletUpdateDTO.getMoney());
+        this.setDetail(memberWalletUpdateDTO.getDetail());
+        this.setServiceType(memberWalletUpdateDTO.getServiceType());
+        this.setIntegral(integral);
     }
 
 }

@@ -29,6 +29,10 @@ public class PayParam {
     @ApiModelProperty(value = "客户端类型")
     private String clientType;
 
+    @NotNull
+    @ApiModelProperty(value = "支付密码")
+    private String payPwd;
+
 
 
 }

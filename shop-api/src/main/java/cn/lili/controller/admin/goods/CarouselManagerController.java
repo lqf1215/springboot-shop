@@ -1,24 +1,13 @@
 package cn.lili.controller.admin.goods;
 
-import cn.lili.common.aop.annotation.PreventDuplicateSubmissions;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.exception.ServiceException;
-import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.goods.entity.dos.Carousel;
-import cn.lili.modules.goods.entity.dos.Category;
-import cn.lili.modules.goods.entity.dos.Goods;
-import cn.lili.modules.goods.entity.dos.GoodsSku;
-import cn.lili.modules.goods.entity.dto.*;
-import cn.lili.modules.goods.entity.enums.GoodsAuthEnum;
-import cn.lili.modules.goods.entity.enums.GoodsStatusEnum;
-import cn.lili.modules.goods.entity.vos.GoodsSkuVO;
-import cn.lili.modules.goods.entity.vos.GoodsVO;
+import cn.lili.modules.goods.entity.dto.CarouselDTO;
+import cn.lili.modules.goods.entity.dto.CarouselSearchParams;
 import cn.lili.modules.goods.service.CarouselService;
-import cn.lili.modules.goods.service.GoodsService;
-import cn.lili.modules.goods.service.GoodsSkuService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,11 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 管理端,轮播管理接口

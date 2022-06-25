@@ -69,7 +69,7 @@ public class User  implements Serializable {
     private String email;
     private long emailAuth;
     private long status;
-    private java.sql.Timestamp lastLoginTime;
+    private Date lastLoginTime;
     private long whiteIf;
     private long authType;
     private long robot;

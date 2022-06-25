@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class PintuanMemberVO {
 
     @ApiModelProperty(value = "会员编号")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员用户名")
     private String userName;
@@ -42,9 +42,9 @@ public class PintuanMemberVO {
     private long groupNum;
 
     public PintuanMemberVO(User user) {
-        this.userId = ""+user.getId();
+        this.userId = user.getId();
         this.userName = user.getName();
-//        this.face = user.getFace();
-//        this.nickName = user.getNickName();
+        this.face = user.getAvatarUrl();
+        this.nickName = user.getName();
     }
 }

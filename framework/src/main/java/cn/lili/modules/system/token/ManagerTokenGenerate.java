@@ -40,7 +40,7 @@ public class ManagerTokenGenerate extends AbstractTokenGenerate<AdminUser> {
 
     @Override
     public Token createToken(AdminUser adminUser, Boolean longTerm) {
-        AuthUser authUser = new AuthUser(adminUser.getUsername(), adminUser.getId(), adminUser.getAvatar(), UserEnums.MANAGER, adminUser.getNickName(), adminUser.getIsSuper());
+        AuthUser authUser = new AuthUser(adminUser.getUsername(), Long.valueOf(adminUser.getId()), adminUser.getAvatar(), UserEnums.MANAGER, adminUser.getUsername(), adminUser.getIsSuper());
 
 
         List<UserMenuVO> userMenuVOList = roleMenuService.findAllMenu(authUser.getId());

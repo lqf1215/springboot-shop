@@ -35,10 +35,11 @@ public class PurchaseOrderServiceImpl extends ServiceImpl<PurchaseOrderMapper, P
     @Transactional(rollbackFor = Exception.class)
     public PurchaseOrderVO addPurchaseOrder(PurchaseOrderVO purchaseOrderVO) {
         PurchaseOrder purchaseOrder = new PurchaseOrder();
+
         BeanUtil.copyProperties(purchaseOrderVO, purchaseOrder);
         //添加采购单
         purchaseOrder.setStatus("OPEN");
-        purchaseOrder.setUserId(UserContext.getCurrentUser().getId());
+        purchaseOrder.setUserId(23L);
         this.save(purchaseOrder);
         //添加采购单子内容
         purchaseOrderItemService.addPurchaseOrderItem(purchaseOrder.getId(), purchaseOrderVO.getPurchaseOrderItems());

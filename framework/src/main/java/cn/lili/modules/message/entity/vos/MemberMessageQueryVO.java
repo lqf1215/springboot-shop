@@ -31,6 +31,6 @@ public class MemberMessageQueryVO {
     private String title;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
 }

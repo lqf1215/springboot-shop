@@ -4,14 +4,10 @@ package cn.lili.modules.user.service;
 import cn.lili.common.security.enums.UserEnums;
 import cn.lili.common.security.token.Token;
 import cn.lili.common.vo.PageVO;
-import cn.lili.modules.connect.entity.dto.ConnectAuthUser;
 import cn.lili.modules.user.entity.dos.User;
-import cn.lili.modules.user.entity.dto.UserMemberEditDTO;
-import cn.lili.modules.user.entity.dto.UserAddDTO;
 import cn.lili.modules.user.entity.dto.UserEditDTO;
 import cn.lili.modules.user.entity.vo.UserSearchVO;
 import cn.lili.modules.user.entity.vo.UserVO;
-import com.alipay.api.domain.UserVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -26,6 +22,10 @@ import java.util.Map;
  */
 public interface UserService extends IService<User> {
 
+    /**
+     * 默认密码
+     */
+    static String DEFAULT_PASSWORD = "111111";
 
     /**
      * 获取当前登录的用户信息
@@ -34,8 +34,15 @@ public interface UserService extends IService<User> {
      */
     User getUserInfo();
 
-
     UserVO getUserInfo(Integer userId);
+    /**
+     * 是否可以通过手机获取用户
+     *
+     * @param uuid   UUID
+     * @param mobile 手机号
+     * @return 操作状态
+     */
+    boolean findByMobile(String uuid, String mobile);
 
     /**
      * 通过用户名获取用户
@@ -47,6 +54,7 @@ public interface UserService extends IService<User> {
 
 
 
+
     /**
      * 修改会员信息
      *
@@ -54,7 +62,6 @@ public interface UserService extends IService<User> {
      * @return 修改后的会员
      */
     User editOwn(UserEditDTO userEditDTO);
-
 
 
     /**
@@ -68,6 +75,14 @@ public interface UserService extends IService<User> {
 
 
 
+    /**
+     * 刷新token
+     *
+     * @param refreshToken
+     * @return Token
+     */
+    Token refreshToken(String refreshToken);
+
 
 
     /**
@@ -79,8 +94,7 @@ public interface UserService extends IService<User> {
      * @param content  变动日志
      * @return 操作结果
      */
-    Boolean updateMemberPoint(Long point, String type, String userId, String content);
-
+    Boolean updateMemberPoint(Long point, String type, Long userId, String content);
 
 
     /**
@@ -95,12 +109,17 @@ public interface UserService extends IService<User> {
      * 获取指定会员数据
      *
      * @param columns   指定获取的列
-     * @param userIds 会员ids
+     * @param memberIds 会员ids
      * @return 指定会员数据
      */
-    List<Map<String, Object>> listFieldsByMemberIds(String columns, List<String> userIds);
+    List<Map<String, Object>> listFieldsByMemberIds(String columns, List<String> memberIds);
 
-
+    /**
+     * 登出
+     *
+     * @param userEnums token角色类型
+     */
+    void logout(UserEnums userEnums);
 
     /**
      * 获取所有会员的手机号
@@ -109,13 +128,6 @@ public interface UserService extends IService<User> {
      */
     List<String> getAllMemberMobile();
 
-    /**
-     * 更新会员登录时间为最新时间
-     *
-     * @param userId 会员id
-     * @return 是否更新成功
-     */
-    boolean updateMemberLoginTime(String userId);
 
     /**
      * 获取用户VO

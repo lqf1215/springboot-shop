@@ -40,7 +40,9 @@ public class GoodsOperationDTO implements Serializable {
     @Size(max = 200, message = "选择了太多店铺分类")
     private String storeCategoryPath;
 
-
+    @ApiModelProperty(value = "品牌id")
+    @Min(value = 0, message = "品牌值不正确")
+    private String brandId;
 
     @ApiModelProperty(value = "商品名称", required = true)
     @NotEmpty(message = "商品名称不能为空")
@@ -121,6 +123,7 @@ public class GoodsOperationDTO implements Serializable {
      */
     @ApiModelProperty(value = "是否商城优选")
     private Integer isSelect;
+
 
     public String getGoodsName() {
         //对商品对名称做一个极限处理。这里没有用xss过滤是因为xss过滤为全局过滤，影响很大。

@@ -50,7 +50,11 @@ public class GoodsStoreController {
      */
     @Autowired
     private GoodsSkuService goodsSkuService;
-
+    /**
+     * 店铺详情
+     */
+//    @Autowired
+//    private StoreDetailService storeDetailService;
 
     @ApiOperation(value = "分页获取商品列表")
     @GetMapping(value = "/list")
@@ -70,7 +74,20 @@ public class GoodsStoreController {
         return ResultUtil.data(goodsSkuService.getGoodsSkuByPage(goodsSearchParams));
     }
 
-
+//    @ApiOperation(value = "分页获取库存告警商品列表")
+//    @GetMapping(value = "/list/stock")
+//    public ResultMessage<StockWarningVO> getWarningStockByPage(GoodsSearchParams goodsSearchParams) {
+//        //获取当前登录商家账号
+//        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+//        StoreDetail storeDetail = OperationalJudgment.judgment(storeDetailService.getStoreDetail(storeId));
+//        Integer stockWarnNum = storeDetail.getStockWarning();
+//        goodsSearchParams.setStoreId(storeId);
+//        goodsSearchParams.setLeQuantity(stockWarnNum);
+//        goodsSearchParams.setMarketEnable(GoodsStatusEnum.UPPER.name());
+//        IPage<GoodsSku> goodsSku = goodsSkuService.getGoodsSkuByPage(goodsSearchParams);
+//        StockWarningVO stockWarning = new StockWarningVO(stockWarnNum, goodsSku);
+//        return ResultUtil.data(stockWarning);
+//    }
 
 
     @ApiOperation(value = "通过id获取")

@@ -28,7 +28,7 @@ public class MemberCouponSearchParams extends BasePromotionsSearchParams impleme
     private static final String PRICE_COLUMN = "price";
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
     /**
      * POINT("打折"), PRICE("减免现金");
      *

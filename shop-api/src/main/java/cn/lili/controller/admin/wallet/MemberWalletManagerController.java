@@ -3,7 +3,7 @@ package cn.lili.controller.admin.wallet;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.wallet.entity.vo.MemberWalletVO;
-import cn.lili.modules.wallet.service.MemberWalletService;
+import cn.lili.modules.wallet.service.UserWalletService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/manager/wallet/wallet")
 public class MemberWalletManagerController {
     @Autowired
-    private MemberWalletService memberWalletService;
+    private UserWalletService userWalletService;
 
     @GetMapping
     @ApiOperation(value = "查询会员预存款余额")
     @ApiImplicitParam(name = "userId", value = "会员ID", paramType = "query")
-    public ResultMessage<MemberWalletVO> get(@RequestParam("userId") String userId) {
-        return ResultUtil.data(memberWalletService.getMemberWallet(userId));
+    public ResultMessage<MemberWalletVO> get(@RequestParam("userId") Long userId) {
+        return ResultUtil.data(userWalletService.getMemberWallet(userId));
     }
 
 

@@ -40,7 +40,7 @@ public class Connect extends BaseIdEntity {
     private Date createTime;
 
     @ApiModelProperty("用户id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty("联合登录id")
     private String unionId;
@@ -52,7 +52,7 @@ public class Connect extends BaseIdEntity {
     private String unionType;
 
 
-    public Connect(String userId, String unionId, String unionType) {
+    public Connect(Long userId, String unionId, String unionType) {
         this.userId = userId;
         this.unionId = unionId;
         this.unionType = unionType;

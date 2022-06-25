@@ -30,9 +30,9 @@ public class CartSnRender implements CartRenderStep {
             //写入备注
             if (tradeDTO.getStoreRemark() != null) {
                 for (StoreRemarkDTO remark : tradeDTO.getStoreRemark()) {
-                    if (item.getStoreId().equals(remark.getStoreId())) {
+//                    if (item.getStoreId().equals(remark.getStoreId())) {
                         item.setRemark(remark.getRemark());
-                    }
+//                    }
                 }
             }
             item.setSn(SnowFlake.createStr("O"));

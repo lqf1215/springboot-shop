@@ -56,7 +56,7 @@ public class PurchaseOrder extends BaseEntity {
     private String contactNumber;
 
     @ApiModelProperty(value = "供求人")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "状态，开启：OPEN，关闭：CLOSE")
     private String status;

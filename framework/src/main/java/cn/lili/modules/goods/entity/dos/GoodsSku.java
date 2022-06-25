@@ -54,7 +54,8 @@ public class GoodsSku extends BaseEntity {
     @ApiModelProperty(value = "商品编号")
     private String sn;
 
-
+    @ApiModelProperty(value = "品牌id")
+    private String brandId;
 
     @ApiModelProperty(value = "分类path")
     private String categoryPath;

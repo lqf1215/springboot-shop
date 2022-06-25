@@ -20,7 +20,7 @@ public interface UserPointsHistoryService extends IService<UserPointsHistory> {
      * @param userId 会员ID
      * @return 会员积分VO
      */
-    UserPointsHistoryVO getMemberPointsHistoryVO(String userId);
+    UserPointsHistoryVO getMemberPointsHistoryVO(Long userId);
 
     /**
      * 会员积分历史
@@ -30,6 +30,6 @@ public interface UserPointsHistoryService extends IService<UserPointsHistory> {
      * @param userName 会员名称
      * @return 积分历史分页
      */
-    IPage<UserPointsHistory> MemberPointsHistoryList(PageVO page, String userId, String userName);
+    IPage<UserPointsHistory> MemberPointsHistoryList(PageVO page, Long userId, String userName);
 
 }

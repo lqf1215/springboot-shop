@@ -46,7 +46,7 @@ public class OrderSearchParams extends PageVO {
     private String storeId;
 
     @ApiModelProperty(value = "会员ID")
-    private String userID;
+    private Long userId;
 
     @ApiModelProperty(value = "收货人")
     private String shipName;
@@ -116,27 +116,27 @@ public class OrderSearchParams extends PageVO {
     private String orderPromotionType;
 
     public <T> QueryWrapper<T> queryWrapper() {
-        AuthUser currentUser = UserContext.getCurrentUser();
+//        AuthUser currentUser = UserContext.getCurrentUser();
         QueryWrapper<T> wrapper = new QueryWrapper<>();
 
         //关键字查询
         if (CharSequenceUtil.isNotEmpty(keywords)) {
             wrapper.and(keyWrapper -> keyWrapper.like("o.sn", keywords).or().like("oi.goods_name", keywords));
         }
-        if (currentUser != null) {
+//        if (currentUser != null) {
             //按卖家查询
-            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.STORE.name()), "o.store_id", currentUser.getStoreId());
+//            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.STORE.name()), "o.store_id", currentUser.getStoreId());
 
             //店铺查询
-            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.MANAGER.name())
-                    && CharSequenceUtil.isNotEmpty(storeId), "o.store_id", storeId);
+//            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.MANAGER.name())
+//                    && CharSequenceUtil.isNotEmpty(storeId), "o.store_id", storeId);
 
             //按买家查询
-            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.MEMBER.name()) && userID == null, "o.user_id", currentUser.getId());
+//            wrapper.eq(CharSequenceUtil.equals(currentUser.getRole().name(), UserEnums.MEMBER.name()) && userId == null, "o.user_id", currentUser.getId());
 
-        }
+//        }
         //按照买家查询
-        wrapper.like(CharSequenceUtil.isNotEmpty(userID), "o.user_id", userID);
+//        wrapper.like(CharSequenceUtil.isNotEmpty(String.valueOf(userId)), "o.user_id", userId);
 
         //按订单编号查询
         wrapper.like(CharSequenceUtil.isNotEmpty(orderSn), "o.sn", orderSn);

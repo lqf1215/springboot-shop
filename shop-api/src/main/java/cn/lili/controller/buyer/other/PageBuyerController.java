@@ -39,17 +39,9 @@ public class PageBuyerController {
         return ResultUtil.data(pageService.getPageData(pageDataDTO));
     }
 
-//    @ApiOperation(value = "获取首页数据")
-//    @GetMapping("/getHome")
-//    public ResultMessage<PageDataVO> getHome() {
-//        PageDataDTO pageDataDTO = new PageDataDTO(PageEnum.INDEX.name());
-//        pageDataDTO.setPageClientType(clientType);
-//        return ResultUtil.data(pageService.getPageData(pageDataDTO));
-//    }
-
-//    @ApiOperation(value = "获取页面数据")
-//    @GetMapping
-//    public ResultMessage<PageDataVO> get(PageDataDTO pageDataDTO) {
-//        return ResultUtil.data(pageService.getPageData(pageDataDTO));
-//    }
+    @ApiOperation(value = "获取页面数据")
+    @GetMapping
+    public ResultMessage<PageDataVO> get(PageDataDTO pageDataDTO) {
+        return ResultUtil.data(pageService.getPageData(pageDataDTO));
+    }
 }

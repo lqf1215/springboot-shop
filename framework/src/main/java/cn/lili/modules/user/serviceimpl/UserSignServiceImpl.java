@@ -103,7 +103,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignMapper, UserSign> i
     }
 
     @Override
-    public void memberSignSendPoint(String userId, Integer day) {
+    public void memberSignSendPoint(Long userId, Integer day) {
         try {
             //获取签到积分赠送设置
             Setting setting = settingService.get(SettingEnum.POINT_SETTING.name());

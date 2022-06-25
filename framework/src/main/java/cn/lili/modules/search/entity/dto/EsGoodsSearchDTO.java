@@ -20,7 +20,8 @@ public class EsGoodsSearchDTO {
     @ApiModelProperty(value = "分类")
     private String categoryId;
 
-
+    @ApiModelProperty(value = "品牌,可以多选 品牌Id@品牌Id@品牌Id")
+    private String brandId;
 
     @ApiModelProperty("是否为推荐商品")
     private Boolean recommend;

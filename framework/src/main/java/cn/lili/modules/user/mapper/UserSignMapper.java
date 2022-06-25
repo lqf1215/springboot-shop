@@ -25,7 +25,7 @@ public interface UserSignMapper extends BaseMapper<UserSign> {
      * @return 会员签到列表
      */
     @Select("SELECT * FROM li_user_sign WHERE TO_DAYS( NOW( ) ) - TO_DAYS( create_time) = 1 and user_id = #{userId}")
-    List<UserSign> getBeforeMemberSign(String userId);
+    List<UserSign> getBeforeMemberSign(Long userId);
 
     /**
      * 获取会员签到
@@ -44,6 +44,6 @@ public interface UserSignMapper extends BaseMapper<UserSign> {
      * @return 会员签到列表
      */
     @Select("SELECT * FROM li_user_sign WHERE DATE_FORMAT(create_time,'%Y%m') = #{time} and user_id = #{userId}")
-    List<UserSign> getMonthMemberSign(String userId, String time);
+    List<UserSign> getMonthMemberSign(Long userId, String time);
 
 }

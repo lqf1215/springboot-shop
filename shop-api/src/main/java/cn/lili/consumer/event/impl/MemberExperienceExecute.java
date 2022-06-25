@@ -55,7 +55,7 @@ public class MemberExperienceExecute implements MemberRegisterEvent, GoodsCommen
         //获取经验值设置
         ExperienceSetting experienceSetting = getExperienceSetting();
         //赠送会员经验值
-        userService.updateMemberPoint(Long.valueOf(experienceSetting.getRegister().longValue()), PointTypeEnum.INCREASE.name(), ""+user.getId(), "会员注册，赠送经验值" + experienceSetting.getRegister());
+        userService.updateMemberPoint(Long.valueOf(experienceSetting.getRegister().longValue()), PointTypeEnum.INCREASE.name(), user.getId(), "会员注册，赠送经验值" + experienceSetting.getRegister());
     }
 
     /**
@@ -86,7 +86,7 @@ public class MemberExperienceExecute implements MemberRegisterEvent, GoodsCommen
             //计算赠送经验值数量
             Double point = CurrencyUtil.mul(experienceSetting.getMoney(), order.getFlowPrice(), 0);
             //赠送会员经验值
-            userService.updateMemberPoint(point.longValue(), PointTypeEnum.INCREASE.name(), order.getUserId()+"", "会员下单，赠送经验值" + point + "分");
+            userService.updateMemberPoint(point.longValue(), PointTypeEnum.INCREASE.name(), order.getUserId(), "会员下单，赠送经验值" + point + "分");
         }
     }
 

@@ -45,6 +45,11 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
     }
 
     @Override
+    public List<UserMenuVO> findAllMenu(Long userId) {
+        return menuMapper.getUserRoleMenu(String.valueOf(userId));
+    }
+
+    @Override
     public List<UserMenuVO> findAllMenu(String userId) {
         return menuMapper.getUserRoleMenu(userId);
     }

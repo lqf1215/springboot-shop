@@ -20,7 +20,12 @@ import java.util.List;
 public interface GoodsService extends IService<Goods> {
 
 
-
+    /**
+     * 根据品牌获取商品
+     *
+     * @param brandIds 品牌ids
+     */
+    List<Goods> getByBrandIds(List<String> brandIds);
 
     /**
      * 下架所有商家商品
@@ -143,7 +148,13 @@ public interface GoodsService extends IService<Goods> {
      */
     Boolean freight(List<String> goodsIds, String templateId);
 
-
+    /**
+     * 修改商品库存数量
+     *
+     * @param goodsId  商品ID
+     * @param quantity 库存数量
+     */
+    void updateStock(String goodsId, Integer quantity);
 
     /**
      * 更新商品评价数量
@@ -160,7 +171,11 @@ public interface GoodsService extends IService<Goods> {
      */
     void updateGoodsBuyCount(String goodsId, int buyCount);
 
-
+    /**
+     * 批量更新商品的店铺信息
+     * @param store
+     */
+//    void updateStoreDetail(Store store);
     /**
      * 统计店铺的商品数量
      * @param storeId 店铺id
@@ -168,5 +183,4 @@ public interface GoodsService extends IService<Goods> {
      */
     long countStoreGoodsNum(String storeId);
 
-    void updateStock(String goodsId, Integer quantity);
 }

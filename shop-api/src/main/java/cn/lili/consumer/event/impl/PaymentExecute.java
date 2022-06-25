@@ -51,7 +51,7 @@ public class PaymentExecute implements OrderStatusChangeEvent {
                     .isRefund(false)
                     .totalAmount(order.getFlowPrice())
                     .payPrice(order.getFlowPrice())
-                    .userId(""+order.getUserId())
+                    .userId(order.getUserId())
                     .paymentName(order.getPaymentMethod())
                     .afterSaleNo("订单取消")
                     .orderSn(order.getSn())

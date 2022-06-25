@@ -9,9 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 商品轮播
@@ -43,7 +41,7 @@ public class Carousel extends BaseEntity {
     private Boolean enable;
 
 
-   public Carousel (CarouselDTO carouselDTO){
+   public Carousel(CarouselDTO carouselDTO){
        this.image=carouselDTO.getImage();
        this.name=carouselDTO.getName();
        this.sort=carouselDTO.getSort();

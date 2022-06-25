@@ -38,7 +38,7 @@ public class OrderCreateReceiptExecute implements TradeEvent {
             for (OrderVO orderVO : orderList) {
                 Receipt receipt = new Receipt();
                 BeanUtil.copyProperties(receiptVO, receipt);
-                receipt.setUserId(""+orderVO.getUserId());
+                receipt.setUserId(orderVO.getUserId());
                 receipt.setUserName(orderVO.getUserName());
                 receipt.setStoreId(orderVO.getStoreId());
                 receipt.setStoreName(orderVO.getStoreName());

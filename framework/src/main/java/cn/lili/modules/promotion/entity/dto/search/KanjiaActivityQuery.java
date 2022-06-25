@@ -24,7 +24,7 @@ public class KanjiaActivityQuery {
     private String goodsName;
 
     @ApiModelProperty(value = "会员id", hidden = true)
-    private String userId;
+    private Long userId;
 
     public <T> QueryWrapper<T> wrapper() {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();

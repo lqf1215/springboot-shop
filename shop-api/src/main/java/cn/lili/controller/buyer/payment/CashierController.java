@@ -49,10 +49,10 @@ public class CashierController {
 
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "paymentMethod", value = "支付方式", paramType = "path", allowableValues = "WALLET,WALLETPOINT"),
-            @ApiImplicitParam(name = "paymentClient", value = "调起方式", paramType = "path", allowableValues = "APP,NATIVE,JSAPI,H5,MP")
+//            @ApiImplicitParam(name = "paymentMethod", value = "支付方式", paramType = "path", allowableValues = "WECHAT,ALIPAY"),
+            @ApiImplicitParam(name = "paymentMethod", value = "支付方式", paramType = "path", allowableValues = "WALLET,WALLETINTEGRAL"),
+//            @ApiImplicitParam(name = "paymentClient", value = "调起方式", paramType = "path", allowableValues = "APP,NATIVE,JSAPI,H5,MP")
     })
-//    @GetMapping(value = "/pay/{paymentMethod}/{paymentClient}")
     @GetMapping(value = "/pay/{paymentMethod}")
     @ApiOperation(value = "支付")
     public ResultMessage payment(
@@ -65,7 +65,7 @@ public class CashierController {
 //        PaymentClientEnum paymentClientEnum = PaymentClientEnum.valueOf(paymentClient);
 
         try {
-            return cashierSupport.payment(paymentMethodEnum, request, response, payParam);
+            return cashierSupport.payment(paymentMethodEnum, PaymentClientEnum.valueOf("APP"), request, response, payParam);
         } catch (ServiceException se) {
             log.info("支付异常", se);
             throw se;

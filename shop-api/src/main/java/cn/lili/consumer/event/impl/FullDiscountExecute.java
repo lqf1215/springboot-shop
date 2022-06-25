@@ -122,7 +122,7 @@ public class FullDiscountExecute implements TradeEvent, OrderStatusChangeEvent {
         try {
             if (cartVO.getGiftPoint() != null && cartVO.getGiftPoint() > 0) {
                 userService.updateMemberPoint(cartVO.getGiftPoint().longValue(), PointTypeEnum.INCREASE.name(),
-                        ""+order.getUserId(), "订单满优惠赠送积分" + cartVO.getGiftPoint());
+                        order.getUserId(), "订单满优惠赠送积分" + cartVO.getGiftPoint());
             }
         } catch (Exception e) {
             log.error("订单赠送积分异常", e);
@@ -132,7 +132,7 @@ public class FullDiscountExecute implements TradeEvent, OrderStatusChangeEvent {
         try {
             //优惠券判定
             if (cartVO.getGiftCouponList() != null && !cartVO.getGiftCouponList().isEmpty()) {
-                cartVO.getGiftCouponList().forEach(couponId -> memberCouponService.receiveCoupon(couponId, ""+order.getUserId(), order.getUserName()));
+                cartVO.getGiftCouponList().forEach(couponId -> memberCouponService.receiveCoupon(couponId, order.getUserId(), order.getUserName()));
             }
         } catch (Exception e) {
             log.error("订单赠送优惠券异常", e);
@@ -210,7 +210,7 @@ public class FullDiscountExecute implements TradeEvent, OrderStatusChangeEvent {
         order.setClientType(originOrder.getClientType());
         //订单日志
         String message = "赠品订单[" + order.getSn() + "]创建";
-        orderLogs.add(new OrderLog(order.getSn(), originOrder.getUserId()+"", UserEnums.MEMBER.name(), originOrder.getUserName(), message));
+        orderLogs.add(new OrderLog(order.getSn(), ""+originOrder.getUserId(), UserEnums.MEMBER.name(), originOrder.getUserName(), message));
 
         //生成子订单
         for (GoodsSku goodsSku : skuList) {

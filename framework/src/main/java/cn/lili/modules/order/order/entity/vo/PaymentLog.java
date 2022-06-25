@@ -37,7 +37,7 @@ public class PaymentLog extends BaseEntity {
     private String storeName;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "用户名")
     private String userName;

@@ -4,23 +4,21 @@ package cn.lili.controller.buyer.passport.connect;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.exception.ServiceException;
-import cn.lili.common.security.token.Token;
 import cn.lili.common.utils.UuidUtils;
 import cn.lili.common.vo.ResultMessage;
-import cn.lili.modules.connect.entity.dto.AuthCallback;
-import cn.lili.modules.connect.entity.dto.ConnectAuthUser;
 import cn.lili.modules.connect.request.AuthRequest;
 import cn.lili.modules.connect.util.ConnectUtil;
-import cn.lili.modules.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 

@@ -30,7 +30,7 @@ public class UserEvaluation extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @NotNull
     @ApiModelProperty(value = "店铺ID")
@@ -108,11 +108,11 @@ public class UserEvaluation extends BaseEntity {
     private Integer descriptionScore;
 
 
-    public UserEvaluation(UserEvaluationDTO userEvaluationDTO, GoodsSku goodsSku, User user, Order order){
+    public UserEvaluation(UserEvaluationDTO userEvaluationDTO, GoodsSku goodsSku, cn.lili.modules.user.entity.dos.User user, Order order){
         //复制评价信息
         BeanUtils.copyProperties(userEvaluationDTO, this);
         //设置会员
-        this.userId= ""+user.getId();
+        this.userId= user.getId();
         //会员名称
         this.userName= user.getName();
         //设置会员头像

@@ -31,6 +31,7 @@ public class CartSkuVO extends CartBase implements Serializable {
     private GoodsSku goodsSku;
 
 
+
     @ApiModelProperty(value = "购买数量")
     private Integer num;
 
@@ -95,8 +96,8 @@ public class CartSkuVO extends CartBase implements Serializable {
         this.purchasePrice = goodsSku.getPromotionFlag() != null && goodsSku.getPromotionFlag() ? goodsSku.getPromotionPrice() : goodsSku.getPrice();
         this.isFreeFreight = false;
         this.utilPrice = goodsSku.getPromotionFlag() != null && goodsSku.getPromotionFlag() ? goodsSku.getPromotionPrice() : goodsSku.getPrice();
-        this.setStoreId(goodsSku.getStoreId());
-        this.setStoreName(goodsSku.getStoreName());
+//        this.setStoreId(goodsSku.getStoreId());
+//        this.setStoreName(goodsSku.getStoreName());
     }
 
     /**

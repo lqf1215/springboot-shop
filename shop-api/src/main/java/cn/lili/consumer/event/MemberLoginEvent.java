@@ -15,5 +15,5 @@ public interface MemberLoginEvent {
      *
      * @param user 会员
      */
-    void memberLogin(User user);
+//    void memberLogin(User user);
 }

@@ -21,7 +21,7 @@ public class EvaluationQueryParams extends PageVO {
     private String id;
 
     @ApiModelProperty(value = "买家ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "skuID")
     private String skuId;
@@ -85,7 +85,7 @@ public class EvaluationQueryParams extends PageVO {
         if (CharSequenceUtil.isNotEmpty(storeId)) {
             queryWrapper.eq("store_id", storeId);
         }
-        if (CharSequenceUtil.isNotEmpty(userId)) {
+        if (CharSequenceUtil.isNotEmpty(""+userId)) {
             queryWrapper.eq("user_id", userId);
         }
         if (CharSequenceUtil.isNotEmpty(haveImage)) {

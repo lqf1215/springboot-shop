@@ -51,7 +51,8 @@ public class Goods extends BaseEntity {
     @Max(value = 99999999, message = "商品价格不能超过99999999")
     private Double price;
 
-
+    @ApiModelProperty(value = "品牌id")
+    private String brandId;
 
     @ApiModelProperty(value = "分类path")
     private String categoryPath;
@@ -135,11 +136,7 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "销售模式", required = true)
     private String salesModel;
 
-    @ApiModelProperty(value = "是否首页")
-    private Integer isHomePage;
 
-    @ApiModelProperty(value = "是否商城优选")
-    private Integer isSelect;
     /**
      * @see GoodsTypeEnum
      */
@@ -149,7 +146,11 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "商品参数json", hidden = true)
     @JsonIgnore
     private String params;
+    @ApiModelProperty(value = "是否首页")
+    private Integer isHomePage;
 
+    @ApiModelProperty(value = "是否商城优选")
+    private Integer isSelect;
 
     public Goods() {
     }
@@ -158,7 +159,7 @@ public class Goods extends BaseEntity {
         this.goodsName = goodsOperationDTO.getGoodsName();
         this.categoryPath = goodsOperationDTO.getCategoryPath();
         this.storeCategoryPath = goodsOperationDTO.getStoreCategoryPath();
-
+        this.brandId = goodsOperationDTO.getBrandId();
         this.templateId = goodsOperationDTO.getTemplateId();
         this.recommend = goodsOperationDTO.getRecommend();
         this.sellingPoint = goodsOperationDTO.getSellingPoint();
@@ -167,9 +168,9 @@ public class Goods extends BaseEntity {
         this.intro = goodsOperationDTO.getIntro();
         this.mobileIntro = goodsOperationDTO.getMobileIntro();
         this.goodsVideo = goodsOperationDTO.getGoodsVideo();
-        this.price = goodsOperationDTO.getPrice();
         this.isHomePage = goodsOperationDTO.getIsHomePage();
         this.isSelect = goodsOperationDTO.getIsSelect();
+        this.price = goodsOperationDTO.getPrice();
         if (goodsOperationDTO.getGoodsParamsDTOList() != null && goodsOperationDTO.getGoodsParamsDTOList().isEmpty()) {
             this.params = JSONUtil.toJsonStr(goodsOperationDTO.getGoodsParamsDTOList());
         }

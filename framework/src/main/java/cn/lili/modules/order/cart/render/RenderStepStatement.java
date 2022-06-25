@@ -29,10 +29,10 @@ public class RenderStepStatement {
     public static RenderStepEnums[] checkedRender = {
             RenderStepEnums.CHECKED_FILTER,
             RenderStepEnums.CHECK_DATA,
-//            RenderStepEnums.SKU_PROMOTION,
-//            RenderStepEnums.FULL_DISCOUNT,
-//            RenderStepEnums.COUPON,
-//            RenderStepEnums.SKU_FREIGHT,
+            RenderStepEnums.SKU_PROMOTION,
+            RenderStepEnums.FULL_DISCOUNT,
+            RenderStepEnums.COUPON,
+            RenderStepEnums.SKU_FREIGHT,
             RenderStepEnums.CART_PRICE,
     };
 

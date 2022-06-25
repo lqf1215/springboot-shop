@@ -54,7 +54,7 @@ public class Order extends BaseEntity {
     private String storeName;
 
     @ApiModelProperty(value = "会员ID")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "用户名")
     private String userName;
@@ -194,14 +194,19 @@ public class Order extends BaseEntity {
     @ApiModelProperty(value = "提货码")
     private String verificationCode;
 
-    @ApiModelProperty(value = "分销员ID")
-    private String distributionId;
+//    @ApiModelProperty(value = "分销员ID")
+//    private String distributionId;
 
     @ApiModelProperty(value = "使用的店铺会员优惠券id(,区分)")
     private String useStoreMemberCouponIds;
 
     @ApiModelProperty(value = "使用的平台会员优惠券id")
     private String usePlatformMemberCouponId;
+    @ApiModelProperty(value = "积分")
+    private Double integral;
+
+    @ApiModelProperty(value = "实付")
+    private Double painAmount;
 
     /**
      * 构建订单

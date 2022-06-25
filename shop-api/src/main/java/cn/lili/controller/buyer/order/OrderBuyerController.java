@@ -48,8 +48,8 @@ public class OrderBuyerController {
     @GetMapping
     public ResultMessage<IPage<OrderSimpleVO>> queryMineOrder(OrderSearchParams orderSearchParams) {
 //        AuthUser currentUser = Objects.requireNonNull(UserContext.getCurrentUser());
-//        orderSearchParams.setUserID(currentUser.getId());
-        orderSearchParams.setUserID("23");
+//        orderSearchParams.setUserId(currentUser.getId());
+        orderSearchParams.setUserId(23L);
         return ResultUtil.data(orderService.queryByParams(orderSearchParams));
     }
 
@@ -60,7 +60,7 @@ public class OrderBuyerController {
     @GetMapping(value = "/{orderSn}")
     public ResultMessage<OrderDetailVO> detail(@NotNull(message = "订单编号不能为空") @PathVariable("orderSn") String orderSn) {
         OrderDetailVO orderDetailVO = orderService.queryDetail(orderSn);
-//        OperationalJudgment.judgment(orderDetailVO.getOrder());
+        orderDetailVO.getOrder();
         return ResultUtil.data(orderDetailVO);
     }
 
@@ -102,7 +102,7 @@ public class OrderBuyerController {
     })
     @DeleteMapping(value = "/{orderSn}")
     public ResultMessage<Object> deleteOrder(@PathVariable String orderSn) {
-//        OperationalJudgment.judgment(orderService.getBySn(orderSn));
+        orderService.getBySn(orderSn);
         orderService.deleteOrder(orderSn);
         return ResultUtil.success();
     }
@@ -113,7 +113,7 @@ public class OrderBuyerController {
     })
     @PostMapping(value = "/getTraces/{orderSn}")
     public ResultMessage<Object> getTraces(@NotBlank(message = "订单编号不能为空") @PathVariable String orderSn) {
-//        OperationalJudgment.judgment(orderService.getBySn(orderSn));
+        orderService.getBySn(orderSn);
         return ResultUtil.data(orderService.getTraces(orderSn));
     }
 
@@ -125,7 +125,6 @@ public class OrderBuyerController {
     })
     @PostMapping(value = "/receipt/{orderSn}")
     public ResultMessage<Object> invoice(@NotBlank(message = "订单编号不能为空") @PathVariable String orderSn) {
-//        OperationalJudgment.judgment(orderService.getBySn(orderSn));
         orderService.getBySn(orderSn);
         return ResultUtil.data(orderService.invoice(orderSn));
     }

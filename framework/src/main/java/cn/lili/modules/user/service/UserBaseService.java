@@ -1,17 +1,9 @@
 package cn.lili.modules.user.service;
 
 
-import cn.lili.common.vo.PageVO;
-import cn.lili.modules.user.entity.dos.User;
 import cn.lili.modules.user.entity.dos.UserBase;
 import cn.lili.modules.user.entity.dto.UserEditDTO;
-import cn.lili.modules.user.entity.vo.UserSearchVO;
-import cn.lili.modules.user.entity.vo.UserVO;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 会员业务层

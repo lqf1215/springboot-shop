@@ -30,7 +30,7 @@ public interface MenuService extends IService<Menu> {
      * @param userId
      * @return
      */
-    List<Menu> findUserList(String userId);
+    List<Menu> findUserList(Long userId);
 
 
     /**

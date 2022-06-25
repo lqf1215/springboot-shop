@@ -2,7 +2,6 @@ package cn.lili.modules.goods.entity.dto;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.lili.common.vo.PageVO;
-import cn.lili.modules.goods.entity.enums.GoodsAuthEnum;
 import cn.lili.modules.goods.entity.enums.GoodsStatusEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiModelProperty;

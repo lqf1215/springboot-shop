@@ -30,7 +30,7 @@ public class MemberAddressManagerController {
 
     @ApiOperation(value = "会员地址分页列表")
     @GetMapping("/{userId}")
-    public ResultMessage<IPage<UserAddress>> getByPage(PageVO page, @PathVariable("userId") Integer userId) {
+    public ResultMessage<IPage<UserAddress>> getByPage(PageVO page, @PathVariable("userId") Long userId) {
         return ResultUtil.data(userAddressService.getAddressByMember(page, userId));
     }
 

@@ -3,7 +3,6 @@ package cn.lili.modules.payment.kit.plugin.wallet;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.exception.ServiceException;
-import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.payment.entity.RefundLog;
 import cn.lili.modules.payment.entity.enums.CashierEnum;
@@ -15,11 +14,9 @@ import cn.lili.modules.payment.kit.dto.PaymentSuccessParams;
 import cn.lili.modules.payment.kit.params.dto.CashierParam;
 import cn.lili.modules.payment.service.PaymentService;
 import cn.lili.modules.payment.service.RefundLogService;
-import cn.lili.modules.user.entity.vo.UserVO;
-import cn.lili.modules.user.service.UserService;
 import cn.lili.modules.wallet.entity.dto.MemberWalletUpdateDTO;
 import cn.lili.modules.wallet.entity.enums.DepositServiceTypeEnum;
-import cn.lili.modules.wallet.service.MemberWalletService;
+import cn.lili.modules.wallet.service.UserWalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -54,13 +51,7 @@ public class WalletPlugin implements Payment {
      * 会员余额
      */
     @Autowired
-    private MemberWalletService memberWalletService;
-
-    /**
-     * 会员余额
-     */
-    @Autowired
-    private UserService userService;
+    private UserWalletService userWalletService;
     /**
      * 收银台
      */
@@ -108,7 +99,7 @@ public class WalletPlugin implements Payment {
     public void cancel(RefundLog refundLog) {
 
         try {
-            memberWalletService.increase(new MemberWalletUpdateDTO(refundLog.getTotalAmount(),
+            userWalletService.increase(new MemberWalletUpdateDTO(refundLog.getTotalAmount(),
                     refundLog.getUserId(),
                     "取消[" + refundLog.getOrderSn() + "]订单，退还金额[" + refundLog.getTotalAmount() + "]",
                     DepositServiceTypeEnum.WALLET_REFUND.name()));
@@ -125,11 +116,11 @@ public class WalletPlugin implements Payment {
      * @param payParam 支付参数
      */
     private void savePaymentLog(PayParam payParam) {
-
+        if (!payParam.getPayPwd().equals("666888")){
+            throw new ServiceException(ResultCode.PAY_PASSWORD_ERROR);
+        }
         //同一个会员如果在不同的客户端使用预存款支付，会存在同时支付，无法保证预存款的正确性，所以对会员加锁
-
-        UserVO userInfo = userService.getUserInfo(23);
-        RLock lock = redisson.getLock(userInfo.getId() + "");
+        RLock lock = redisson.getLock(23 + "");
         lock.lock();
         try {
             //获取支付收银参数
@@ -143,7 +134,7 @@ public class WalletPlugin implements Payment {
     @Override
     public void refund(RefundLog refundLog) {
         try {
-            memberWalletService.increase(new MemberWalletUpdateDTO(refundLog.getTotalAmount(),
+            userWalletService.increase(new MemberWalletUpdateDTO(refundLog.getTotalAmount(),
                     refundLog.getUserId(),
                     "售后[" + refundLog.getAfterSaleNo() + "]审批，退还金额[" + refundLog.getTotalAmount() + "]",
                     DepositServiceTypeEnum.WALLET_REFUND.name()));
@@ -164,13 +155,12 @@ public class WalletPlugin implements Payment {
 
         //支付信息
         try {
-            UserVO userInfo = userService.getUserInfo(23);
-            if (userInfo == null) {
-                throw new ServiceException(ResultCode.USER_NOT_LOGIN);
-            }
-            boolean result = memberWalletService.reduce(new MemberWalletUpdateDTO(
+//            if (UserContext.getCurrentUser() == null) {
+//                throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+//            }
+            boolean result = userWalletService.reduce(new MemberWalletUpdateDTO(
                             cashierParam.getPrice(),
-                    ""+userInfo.getId(),
+                           23L,
                             "订单[" + cashierParam.getOrderSns() + "]支付金额[" + cashierParam.getPrice() + "]",
                             DepositServiceTypeEnum.WALLET_PAY.name()
                     )
@@ -188,9 +178,9 @@ public class WalletPlugin implements Payment {
                     log.info("支付回调通知：余额支付：{}", payParam);
                 } catch (ServiceException e) {
                     //业务异常，则支付手动回滚
-                    memberWalletService.increase(new MemberWalletUpdateDTO(
+                    userWalletService.increase(new MemberWalletUpdateDTO(
                             cashierParam.getPrice(),
-                            ""+userInfo.getId(),
+                           23L,
                             "订单[" + cashierParam.getOrderSns() + "]支付异常，余额返还[" + cashierParam.getPrice() + "]",
                             DepositServiceTypeEnum.WALLET_REFUND.name())
                     );

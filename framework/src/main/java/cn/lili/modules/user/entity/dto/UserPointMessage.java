@@ -19,5 +19,5 @@ public class UserPointMessage {
     private String type;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 }

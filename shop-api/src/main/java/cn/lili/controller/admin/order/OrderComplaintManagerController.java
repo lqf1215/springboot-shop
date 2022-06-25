@@ -9,7 +9,10 @@ import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.order.order.entity.dos.OrderComplaint;
 import cn.lili.modules.order.order.entity.enums.CommunicationOwnerEnum;
 import cn.lili.modules.order.order.entity.enums.OrderComplaintStatusEnum;
-import cn.lili.modules.order.order.entity.vo.*;
+import cn.lili.modules.order.order.entity.vo.OrderComplaintCommunicationVO;
+import cn.lili.modules.order.order.entity.vo.OrderComplaintOperationParams;
+import cn.lili.modules.order.order.entity.vo.OrderComplaintSearchParams;
+import cn.lili.modules.order.order.entity.vo.OrderComplaintVO;
 import cn.lili.modules.order.order.service.OrderComplaintCommunicationService;
 import cn.lili.modules.order.order.service.OrderComplaintService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,8 +22,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 /**
  * 管理端,交易投诉接口
@@ -74,7 +75,7 @@ public class OrderComplaintManagerController {
     @PostMapping("/communication")
     public ResultMessage<OrderComplaintCommunicationVO> addCommunication(@RequestParam String complainId, @RequestParam String content) {
         AuthUser currentUser = UserContext.getCurrentUser();
-        OrderComplaintCommunicationVO communicationVO = new OrderComplaintCommunicationVO(complainId, content, CommunicationOwnerEnum.PLATFORM.name(), currentUser.getId(), currentUser.getUsername());
+        OrderComplaintCommunicationVO communicationVO = new OrderComplaintCommunicationVO(complainId, content, CommunicationOwnerEnum.PLATFORM.name(), ""+currentUser.getId(), currentUser.getUsername());
         orderComplaintCommunicationService.addCommunication(communicationVO);
         return ResultUtil.data(communicationVO);
     }
@@ -106,15 +107,4 @@ public class OrderComplaintManagerController {
         orderComplaintService.updateOrderComplainByStatus(orderComplaintOperationParams);
         return ResultUtil.success();
     }
-
-
-
-    @PreventDuplicateSubmissions
-    @ApiOperation(value = "申诉")
-    @PutMapping("/appeal")
-    public ResultMessage<OrderComplaintVO> appeal(StoreAppealVO storeAppealVO) {
-        orderComplaintService.appeal(storeAppealVO);
-        return ResultUtil.data(orderComplaintService.getOrderComplainById(storeAppealVO.getOrderComplaintId()));
-    }
-
 }

@@ -8,6 +8,7 @@ import cn.lili.common.exception.ServiceException;
 import cn.lili.modules.goods.entity.dos.Category;
 import cn.lili.modules.goods.entity.vos.CategoryVO;
 import cn.lili.modules.goods.mapper.CategoryMapper;
+import cn.lili.modules.goods.service.CategoryBrandService;
 import cn.lili.modules.goods.service.CategoryParameterGroupService;
 import cn.lili.modules.goods.service.CategoryService;
 import cn.lili.modules.goods.service.CategorySpecificationService;
@@ -44,6 +45,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private CategoryBrandService categoryBrandService;
 
     @Autowired
     private CategoryParameterGroupService categoryParameterGroupService;
@@ -151,9 +154,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return categoryVOList;
     }
 
-
-
-
     /**
      * 获取指定分类的分类名称
      *
@@ -246,7 +246,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public void delete(String id) {
         this.removeById(id);
         removeCache();
-
+        //删除关联关系
+        categoryBrandService.deleteByCategoryId(id);
         categoryParameterGroupService.deleteByCategoryId(id);
         categorySpecificationService.deleteByCategoryId(id);
     }

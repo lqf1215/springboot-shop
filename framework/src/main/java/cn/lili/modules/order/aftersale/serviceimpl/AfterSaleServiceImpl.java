@@ -33,7 +33,6 @@ import cn.lili.modules.order.trade.entity.enums.AfterSaleStatusEnum;
 import cn.lili.modules.order.trade.entity.enums.AfterSaleTypeEnum;
 import cn.lili.modules.payment.entity.enums.PaymentMethodEnum;
 import cn.lili.modules.payment.kit.RefundSupport;
-import cn.lili.modules.store.entity.dto.StoreAfterSaleAddressDTO;
 import cn.lili.modules.system.aspect.annotation.SystemLogPoint;
 import cn.lili.modules.system.entity.dos.Logistics;
 import cn.lili.modules.system.entity.vo.Traces;
@@ -81,7 +80,11 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
      */
     @Autowired
     private LogisticsService logisticsService;
-
+    /**
+     * 店铺详情
+     */
+//    @Autowired
+//    private StoreDetailService storeDetailService;
     /**
      * 售后支持，这里用于退款操作
      */
@@ -157,7 +160,7 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
         afterSaleApplyVO.setImage(orderItem.getImage());
         afterSaleApplyVO.setGoodsPrice(orderItem.getGoodsPrice());
         afterSaleApplyVO.setSkuId(orderItem.getSkuId());
-        afterSaleApplyVO.setUserId(""+order.getUserId());
+        afterSaleApplyVO.setUserId(order.getUserId());
         return afterSaleApplyVO;
     }
 
@@ -361,6 +364,7 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
     }
 
 
+
     /**
      * 创建售后
      *
@@ -380,9 +384,9 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
 
         //写入商家信息
         OrderItem orderItem = orderItemService.getBySn(afterSaleDTO.getOrderItemSn());
-        Order order = OperationalJudgment.judgment(orderService.getBySn(orderItem.getOrderSn()));
-        afterSale.setStoreId(order.getStoreId());
-        afterSale.setStoreName(order.getStoreName());
+        Order order =orderService.getBySn(orderItem.getOrderSn());
+//        afterSale.setStoreId(order.getStoreId());
+//        afterSale.setStoreName(order.getStoreName());
 
         //写入订单商品信息
         afterSale.setGoodsImage(orderItem.getImage());

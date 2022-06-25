@@ -1,7 +1,6 @@
 package cn.lili.modules.order.order.entity.dto;
 
 import cn.lili.common.vo.PageVO;
-import cn.lili.modules.store.entity.dos.Bill;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +28,8 @@ public class StoreFlowQueryDTO {
     @ApiModelProperty(value = "过滤只看分销订单")
     private Boolean justDistribution;
 
-    @ApiModelProperty("结算单")
-    private Bill bill;
+//    @ApiModelProperty("结算单")
+//    private Bill bill;
 
     @ApiModelProperty(value = "分页")
     private PageVO pageVO;

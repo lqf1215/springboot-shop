@@ -83,7 +83,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Autowired
     private GoodsSkuService goodsSkuService;
-
+    /**
+     * 店铺详情
+     */
+//    @Autowired
+//    private StoreService storeService;
     /**
      * 会员评价
      */
@@ -106,7 +110,12 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private Cache<GoodsVO> cache;
 
-
+    @Override
+    public List<Goods> getByBrandIds(List<String> brandIds) {
+        LambdaQueryWrapper<Goods> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.in(Goods::getBrandId, brandIds);
+        return list(lambdaQueryWrapper);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -377,22 +386,28 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Transactional(rollbackFor = Exception.class)
     public Boolean freight(List<String> goodsIds, String templateId) {
 
-//        AuthUser authUser = this.checkStoreAuthority();
+        AuthUser authUser = this.checkStoreAuthority();
 
         FreightTemplate freightTemplate = freightTemplateService.getById(templateId);
         if (freightTemplate == null) {
             throw new ServiceException(ResultCode.FREIGHT_TEMPLATE_NOT_EXIST);
         }
-//        if (authUser != null && !freightTemplate.getStoreId().equals(authUser.getStoreId())) {
-//            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
-//        }
+        if (authUser != null && !freightTemplate.getStoreId().equals(authUser.getStoreId())) {
+            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
+        }
         LambdaUpdateWrapper<Goods> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
         lambdaUpdateWrapper.set(Goods::getTemplateId, templateId);
         lambdaUpdateWrapper.in(Goods::getId, goodsIds);
         return this.update(lambdaUpdateWrapper);
     }
 
-
+    @Override
+    public void updateStock(String goodsId, Integer quantity) {
+        LambdaUpdateWrapper<Goods> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
+        lambdaUpdateWrapper.set(Goods::getQuantity, quantity);
+        lambdaUpdateWrapper.eq(Goods::getId, goodsId);
+        this.update(lambdaUpdateWrapper);
+    }
 
     @Override
     public void updateGoodsCommentNum(String goodsId) {
@@ -427,7 +442,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                 .set(Goods::getBuyCount, buyCount));
     }
 
-
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public void updateStoreDetail(Store store) {
+//        UpdateWrapper updateWrapper = new UpdateWrapper<>()
+//                .eq("store_id", store.getId())
+//                .set("store_name", store.getStoreName())
+//                .set("self_operated", store.getSelfOperated());
+//        this.update(updateWrapper);
+//        goodsSkuService.update(updateWrapper);
+//    }
 
     @Override
     public long countStoreGoodsNum(String storeId) {
@@ -529,7 +553,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         GoodsSetting goodsSetting = JSONUtil.toBean(setting.getSettingValue(), GoodsSetting.class);
         //是否需要审核
         goods.setAuthFlag(Boolean.TRUE.equals(goodsSetting.getGoodsCheck()) ? GoodsAuthEnum.TOBEAUDITED.name() : GoodsAuthEnum.PASS.name());
-//        //判断当前用户是否为店铺
+        //判断当前用户是否为店铺
 //        if (Objects.requireNonNull(UserContext.getCurrentUser()).getRole().equals(UserEnums.STORE)) {
 //            StoreVO storeDetail = this.storeService.getStoreDetail();
 //            if (storeDetail.getSelfOperated() != null) {
@@ -566,10 +590,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     private LambdaUpdateWrapper<Goods> getUpdateWrapperByStoreAuthority() {
         LambdaUpdateWrapper<Goods> updateWrapper = new LambdaUpdateWrapper<>();
-//        AuthUser authUser = this.checkStoreAuthority();
-//        if (authUser != null) {
-//            updateWrapper.eq(Goods::getStoreId, authUser.getStoreId());
-//        }
+        AuthUser authUser = this.checkStoreAuthority();
+        if (authUser != null) {
+            updateWrapper.eq(Goods::getStoreId, authUser.getStoreId());
+        }
         return updateWrapper;
     }
 
@@ -610,17 +634,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     private LambdaQueryWrapper<Goods> getQueryWrapperByStoreAuthority() {
         LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
-//        AuthUser authUser = this.checkStoreAuthority();
-//        if (authUser != null) {
-//            queryWrapper.eq(Goods::getStoreId, authUser.getStoreId());
-//        }
+        AuthUser authUser = this.checkStoreAuthority();
+        if (authUser != null) {
+            queryWrapper.eq(Goods::getStoreId, authUser.getStoreId());
+        }
         return queryWrapper;
     }
-    @Override
-    public void updateStock(String goodsId, Integer quantity) {
-        LambdaUpdateWrapper<Goods> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
-        lambdaUpdateWrapper.set(Goods::getQuantity, quantity);
-        lambdaUpdateWrapper.eq(Goods::getId, goodsId);
-        this.update(lambdaUpdateWrapper);
-    }
+
 }

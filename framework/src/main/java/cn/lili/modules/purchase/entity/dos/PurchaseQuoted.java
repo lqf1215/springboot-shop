@@ -53,6 +53,6 @@ public class PurchaseQuoted extends BaseIdEntity {
     private String contactNumber;
 
     @ApiModelProperty(value = "报价人")
-    private String userId;
+    private Long userId;
 
 }

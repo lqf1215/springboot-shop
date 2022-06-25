@@ -23,7 +23,7 @@ public class ResultMessage<T> implements Serializable {
     /**
      * 消息
      */
-    private String message;
+    private String msg;
 
     /**
      * 返回代码
@@ -38,5 +38,10 @@ public class ResultMessage<T> implements Serializable {
     /**
      * 结果对象
      */
-    private T result;
+    private T data;
+
+    /**
+     * 前端显示toast
+     */
+    private Integer show;
 }

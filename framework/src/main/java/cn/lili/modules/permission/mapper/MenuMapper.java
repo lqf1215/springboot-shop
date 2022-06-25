@@ -26,7 +26,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
             "SELECT ur.role_id FROM li_user_role AS ur WHERE ur.user_id=#{userId}) OR rm.role_id IN (" +
             "SELECT dr.role_id FROM li_department_role AS dr WHERE dr.department_id =(" +
             "SELECT department_id FROM li_admin_user AS au WHERE au.id = #{userId})))")
-    List<Menu> findByUserId(String userId);
+    List<Menu> findByUserId(Long userId);
 
     /**
      * 根据用户获取菜单权限

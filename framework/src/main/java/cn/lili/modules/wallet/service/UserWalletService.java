@@ -2,8 +2,8 @@ package cn.lili.modules.wallet.service;
 
 
 import cn.lili.modules.user.entity.dos.User;
-import cn.lili.modules.wallet.entity.dos.MemberWallet;
-import cn.lili.modules.wallet.entity.dos.MemberWithdrawApply;
+import cn.lili.modules.wallet.entity.dos.UserWallet;
+import cn.lili.modules.wallet.entity.dos.UserWithdrawApply;
 import cn.lili.modules.wallet.entity.dto.MemberWalletUpdateDTO;
 import cn.lili.modules.wallet.entity.vo.MemberWalletVO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,9 +14,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author pikachu
  * @since 2020-02-25 14:10:16
  */
-public interface UserWalletService extends IService<MemberWallet> {
+public interface UserWalletService extends IService<UserWallet> {
 
-
+    /**
+     * 查询会员的预存款
+     *
+     * @param userId 会员id
+     * @return 会员预存款VO
+     */
+    MemberWalletVO getMemberWallet(Long userId);
 
     /**
      * 增加用户预存款余额
@@ -26,14 +32,29 @@ public interface UserWalletService extends IService<MemberWallet> {
      */
     Boolean increase(MemberWalletUpdateDTO memberWalletUpdateDTO);
 
+    /**
+     * 从冻结金额到余额
+     *
+     * @param memberWalletUpdateDTO 变动模型
+     * @return 返回冻结结果    true:成功    false:失败
+     */
+    Boolean increaseWithdrawal(MemberWalletUpdateDTO memberWalletUpdateDTO);
 
     /**
-     * 扣减用户预存款余额
+     * 扣减用户余额
      *
      * @param memberWalletUpdateDTO 变动模型
      * @return 操作状态 true:成功    false:失败
      */
     Boolean reduce(MemberWalletUpdateDTO memberWalletUpdateDTO);
+
+    /**
+     * 扣减用户余额+积分
+     *
+     * @param memberWalletUpdateDTO 变动模型
+     * @return 操作状态 true:成功    false:失败
+     */
+    Boolean reduceIntegral(MemberWalletUpdateDTO memberWalletUpdateDTO);
 
     /**
      * 提现扣减余额到冻结金额
@@ -51,7 +72,20 @@ public interface UserWalletService extends IService<MemberWallet> {
      */
     Boolean reduceFrozen(MemberWalletUpdateDTO memberWalletUpdateDTO);
 
+    /**
+     * 设置支付密码
+     *
+     * @param user   会员id
+     * @param password 支付密码
+     */
+    void setMemberWalletPassword(User user, String password);
 
+    /**
+     * 检查当前会员是否设置过预存款密码
+     *
+     * @return 操作状态
+     */
+    Boolean checkPassword();
 
     /**
      * 会员注册添加会员预存款
@@ -60,8 +94,23 @@ public interface UserWalletService extends IService<MemberWallet> {
      * @param userName 会员名称
      * @return 操作结果
      */
-    MemberWallet save(String userId, String userName);
+    UserWallet save(Long userId, String userName);
 
+    /**
+     * 用户提现
+     *
+     * @param price 提现金额
+     * @return 是否提现成功
+     */
+    Boolean applyWithdrawal(Double price);
 
+    /**
+     * 提现公共方法，此方法供前端用户提现和后端提现使用
+     *
+     * @param userWithdrawApply 会员零钱提现申请
+     * @return 操作状态
+     */
+    Boolean withdrawal(UserWithdrawApply userWithdrawApply);
 
+    UserWallet getWalletByUserId(Long userId);
 }

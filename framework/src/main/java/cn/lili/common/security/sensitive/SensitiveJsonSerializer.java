@@ -69,7 +69,6 @@ public class SensitiveJsonSerializer extends JsonSerializer<String>
     private boolean desensitization() {
 
         //当前用户
-//        AuthUser authUser = UserContext.getCurrentUser();
         AuthUser authUser = UserContext.getCurrentUser();
         //默认脱敏
         if (authUser == null) {

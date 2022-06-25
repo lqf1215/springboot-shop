@@ -1,6 +1,7 @@
 package cn.lili.modules.goods.entity.vos;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.lili.modules.goods.entity.dos.Brand;
 import cn.lili.modules.goods.entity.dos.Category;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,8 @@ public class CategoryVO extends Category {
     @ApiModelProperty("子分类列表")
     private List<CategoryVO> children;
 
-
+    @ApiModelProperty("分类关联的品牌列表")
+    private List<Brand> brandList;
 
     public CategoryVO(Category category) {
         BeanUtil.copyProperties(category, this);

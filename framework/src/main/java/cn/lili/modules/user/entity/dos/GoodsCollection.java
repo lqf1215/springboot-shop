@@ -34,12 +34,12 @@ public class GoodsCollection extends BaseIdEntity {
     private Date createTime;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "商品id")
     private String skuId;
 
-    public GoodsCollection(String userId, String goodsId) {
+    public GoodsCollection(Long userId, String goodsId) {
         this.userId = userId;
         this.skuId = goodsId;
     }

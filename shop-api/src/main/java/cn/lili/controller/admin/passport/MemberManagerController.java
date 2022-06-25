@@ -1,26 +1,17 @@
 package cn.lili.controller.admin.passport;
 
-import cn.lili.common.aop.annotation.DemoSite;
-import cn.lili.common.aop.annotation.PreventDuplicateSubmissions;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.vo.PageVO;
 import cn.lili.common.vo.ResultMessage;
-import cn.lili.modules.user.entity.dos.User;
-import cn.lili.modules.user.entity.dto.UserMemberEditDTO;
-import cn.lili.modules.user.entity.dto.UserAddDTO;
 import cn.lili.modules.user.entity.vo.UserSearchVO;
 import cn.lili.modules.user.entity.vo.UserVO;
 import cn.lili.modules.user.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 管理端,会员接口
@@ -50,14 +41,40 @@ public class MemberManagerController {
         return ResultUtil.data(userService.getMember(id));
     }
 
+//    @ApiOperation(value = "添加会员")
+//    @PostMapping
+//    public ResultMessage<User> save(@Valid MemberAddDTO member) {
+//
+//        return ResultUtil.data(userService.addMember(member));
+//    }
+
+//    @DemoSite
+//    @PreventDuplicateSubmissions
+//    @ApiOperation(value = "修改会员基本信息")
+//    @PutMapping
+//    public ResultMessage<User> update(@Valid ManagerMemberEditDTO managerMemberEditDTO) {
+//        return ResultUtil.data(userService.updateMember(managerMemberEditDTO));
+//    }
+
+//    @DemoSite
+//    @PreventDuplicateSubmissions
+//    @ApiOperation(value = "修改会员状态,开启关闭会员")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "memberIds", value = "会员ID", required = true, dataType = "String", allowMultiple = true, paramType = "query"),
+//            @ApiImplicitParam(name = "disabled", required = true, dataType = "boolean", paramType = "query")
+//    })
+//    @PutMapping("/updateMemberStatus")
+//    public ResultMessage<Object> updateMemberStatus(@RequestParam List<String> memberIds, @RequestParam Boolean disabled) {
+//        userService.updateMemberStatus(memberIds, disabled);
+//        return ResultUtil.success();
+//    }
 
 
-
-    @ApiOperation(value = "根据条件查询会员总数")
-    @GetMapping("/num")
-    public ResultMessage<Long> getByPage(UserSearchVO userSearchVO) {
-        return ResultUtil.data(userService.getMemberNum(userSearchVO));
-    }
+//    @ApiOperation(value = "根据条件查询会员总数")
+//    @GetMapping("/num")
+//    public ResultMessage<Long> getByPage(UserSearchVO userSearchVO) {
+//        return ResultUtil.data(userService.getMemberNum(userSearchVO));
+//    }
 
 
 }

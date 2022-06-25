@@ -99,6 +99,7 @@ public interface CategoryService extends IService<Category> {
      * @param category 商品分类信息
      * @return 修改结果
      */
+    @CacheEvict(key = "#category.id")
     void updateCategory(Category category);
 
     /**

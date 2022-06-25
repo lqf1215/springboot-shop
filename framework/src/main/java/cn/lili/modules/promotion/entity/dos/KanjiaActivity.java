@@ -28,7 +28,7 @@ public class KanjiaActivity extends BaseEntity {
     private String kanjiaActivityGoodsId;
 
     @ApiModelProperty(value = "发起砍价活动会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "发起砍价活动会员名称")
     private String userName;

@@ -18,7 +18,7 @@ public class MemberWalletUpdateDTO {
     @ApiModelProperty(value = "变动金额")
     private Double money;
     @ApiModelProperty(value = "变动会员id")
-    private String userId;
+    private Long userId;
     @ApiModelProperty(value = "日志详情")
     private String detail;
 
@@ -27,4 +27,5 @@ public class MemberWalletUpdateDTO {
      */
     @ApiModelProperty(value = "变动业务原因")
     private String serviceType;
+
 }

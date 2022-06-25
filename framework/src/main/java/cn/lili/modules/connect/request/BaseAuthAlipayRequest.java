@@ -113,7 +113,7 @@ public class BaseAuthAlipayRequest extends BaseAuthRequest {
         return ConnectAuthUser.builder()
             .rawUserInfo(JSONObject.parseObject(JSONObject.toJSONString(response)))
             .uuid(response.getUserId())
-            .username(StringUtils.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
+            .username(StringUtils.isEmpty(response.getUserName()) ? response.getUserName() : response.getUserName())
             .nickname(response.getNickName())
             .avatar(response.getAvatar())
             .location(location)

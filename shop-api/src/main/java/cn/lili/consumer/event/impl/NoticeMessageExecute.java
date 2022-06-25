@@ -92,7 +92,7 @@ public class NoticeMessageExecute implements TradeEvent, OrderStatusChangeEvent,
                 default:
                     break;
             }
-            noticeMessageDTO.setUserId(""+orderDetailVO.getOrder().getUserId());
+            noticeMessageDTO.setUserId(orderDetailVO.getOrder().getUserId());
             //添加站内信参数
             params.put(NoticeMessageParameterEnum.GOODS.getType(), orderDetailVO.getOrderItems().get(0).getGoodsName());
             noticeMessageDTO.setParameter(params);

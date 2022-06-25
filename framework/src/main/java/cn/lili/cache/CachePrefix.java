@@ -60,6 +60,12 @@ public enum CachePrefix {
      */
     DEPARTMENT_IDS,
 
+
+    /**
+     * 所有运费模版列表
+     */
+    SHIP_TEMPLATE_ALL,
+
     /**
      * 用户错误登录限制
      */
@@ -197,11 +203,6 @@ public enum CachePrefix {
      * 店铺运费模版列表
      */
     SHIP_TEMPLATE,
-
-    /**
-     * 所有运费模版列表
-     */
-    SHIP_TEMPLATE_ALL,
 
     /**
      * 店铺中某个运费模版

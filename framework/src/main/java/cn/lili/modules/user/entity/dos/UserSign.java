@@ -37,7 +37,7 @@ public class UserSign extends BaseIdEntity {
     private String userName;
 
     @ApiModelProperty(value = "会员用户ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "连续签到天数")
     private Integer signDay;

@@ -4,7 +4,6 @@ import cn.hutool.json.JSONUtil;
 import cn.lili.common.enums.ClientTypeEnum;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.exception.ServiceException;
-import cn.lili.common.security.context.UserContext;
 import cn.lili.common.utils.SpringContextUtil;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.payment.entity.enums.PaymentClientEnum;
@@ -12,7 +11,6 @@ import cn.lili.modules.payment.entity.enums.PaymentMethodEnum;
 import cn.lili.modules.payment.kit.dto.PayParam;
 import cn.lili.modules.payment.kit.params.CashierExecute;
 import cn.lili.modules.payment.kit.params.dto.CashierParam;
-import cn.lili.modules.payment.kit.plugin.wallet.WalletPlugin;
 import cn.lili.modules.system.entity.dos.Setting;
 import cn.lili.modules.system.entity.dto.OrderSetting;
 import cn.lili.modules.system.entity.dto.payment.PaymentSupportSetting;
@@ -21,7 +19,7 @@ import cn.lili.modules.system.entity.enums.SettingEnum;
 import cn.lili.modules.system.service.SettingService;
 import cn.lili.modules.user.entity.vo.UserVO;
 import cn.lili.modules.user.service.UserService;
-import cn.lili.modules.wallet.service.MemberWalletService;
+import cn.lili.modules.wallet.service.UserWalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,16 +46,13 @@ public class CashierSupport {
      * 预存款
      */
     @Autowired
-    private MemberWalletService memberWalletService;
+    private UserWalletService userWalletService;
     /**
      * 配置
      */
     @Autowired
     private SettingService settingService;
 
-    /**
-     * user
-     */
     @Autowired
     private UserService userService;
 
@@ -79,33 +74,20 @@ public class CashierSupport {
         log.info("支付请求：客户端：{},支付类型：{},请求：{}", paymentClientEnum.name(), paymentMethodEnum.name(), payParam.toString());
 
         //支付方式调用
-        switch (paymentClientEnum) {
-            case H5:
-                return payment.h5pay(request, response, payParam);
-            case APP:
+//        switch (paymentClientEnum) {
+//            case H5:
+//                return payment.h5pay(request, response, payParam);
+//            case APP:
                 return payment.appPay(request, payParam);
-            case JSAPI:
-                return payment.jsApiPay(request, payParam);
-            case NATIVE:
-                return payment.nativePay(request, payParam);
-            case MP:
-                return payment.mpPay(request, payParam);
-            default:
-                return null;
-        }
-    }
-
-    public ResultMessage<Object> payment(PaymentMethodEnum paymentMethodEnum,
-                                         HttpServletRequest request, HttpServletResponse response,
-                                         PayParam payParam) {
-        if (paymentMethodEnum == null) {
-            throw new ServiceException(ResultCode.PAY_NOT_SUPPORT);
-        }
-        //获取支付插件
-//        Payment payment = (Payment) SpringContextUtil.getBean(paymentMethodEnum.getPlugin());
-        Payment payment = (Payment)  SpringContextUtil.getBean(paymentMethodEnum.getPlugin());
-        log.info("支付请求：支付类型：{},请求：{}", paymentMethodEnum.name(), payParam.toString());
-        return payment.appPay(request, payParam);
+//            case JSAPI:
+//                return payment.jsApiPay(request, payParam);
+//            case NATIVE:
+//                return payment.nativePay(request, payParam);
+//            case MP:
+//                return payment.mpPay(request, payParam);
+//            default:
+//                return null;
+//        }
     }
 
     /**
@@ -171,6 +153,7 @@ public class CashierSupport {
      * @return 收银台参数
      */
     public CashierParam cashierParam(PayParam payParam) {
+        UserVO userInfo = userService.getUserInfo(23);
         for (CashierExecute paramInterface : cashierExecuteList) {
             CashierParam cashierParam = paramInterface.getPaymentParams(payParam);
             //如果为空，则表示收银台参数初始化不匹配，继续匹配下一条
@@ -182,9 +165,8 @@ public class CashierSupport {
                 throw new ServiceException(ResultCode.PAY_UN_WANTED);
             }
             cashierParam.setSupport(support(payParam.getClientType()));
-            UserVO user=userService.getUserInfo(23);
-//            cashierParam.setWalletValue(memberWalletService.getMemberWallet(UserContext.getCurrentUser().getId()).getMemberWallet());
-            cashierParam.setWalletValue(user.getUsing());
+//            cashierParam.setWalletValue(memberWalletService.getMemberWallet(23L).getMemberWallet());
+            cashierParam.setWalletValue(userInfo.getUsing());
             OrderSetting orderSetting = JSONUtil.toBean(settingService.get(SettingEnum.ORDER_SETTING.name()).getSettingValue(), OrderSetting.class);
             Integer minute = orderSetting.getAutoCancel();
             cashierParam.setAutoCancel(cashierParam.getCreateTime().getTime() + minute * 1000 * 60);

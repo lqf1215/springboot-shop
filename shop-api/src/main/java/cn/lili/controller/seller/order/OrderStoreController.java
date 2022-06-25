@@ -8,6 +8,7 @@ import cn.lili.common.security.OperationalJudgment;
 import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.user.entity.dto.UserAddressDTO;
+import cn.lili.modules.user.service.StoreLogisticsService;
 import cn.lili.modules.order.order.entity.dto.OrderExportDTO;
 import cn.lili.modules.order.order.entity.dto.OrderSearchParams;
 import cn.lili.modules.order.order.entity.vo.OrderDetailVO;
@@ -54,7 +55,11 @@ public class OrderStoreController {
      */
     @Autowired
     private OrderPriceService orderPriceService;
-
+    /**
+     * 物流公司
+     */
+    @Autowired
+    private StoreLogisticsService storeLogisticsService;
 
 
     @ApiOperation(value = "查询订单列表")
@@ -145,7 +150,18 @@ public class OrderStoreController {
         return ResultUtil.data(orderService.getTraces(orderSn));
     }
 
+    @ApiOperation(value = "下载待发货的订单列表", produces = "application/octet-stream")
+    @GetMapping(value = "/downLoadDeliverExcel")
+    public void downLoadDeliverExcel() {
+        HttpServletResponse response = ThreadContextHolder.getHttpResponse();
+        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+        //获取店铺已经选择物流公司列表
+//        List<String> logisticsName = storeLogisticsService.getStoreSelectedLogisticsName(storeId);
+        //下载订单批量发货Excel
+//        this.orderService.getBatchDeliverList(response, logisticsName);
+        this.orderService.getBatchDeliverList(response);
 
+    }
 
     @PostMapping(value = "/batchDeliver", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "上传文件进行订单批量发货")

@@ -21,9 +21,10 @@ public enum PaymentMethodEnum {
      */
     WALLET("walletPlugin", "余额支付"),
     /**
-     * 余额支付
+     * 余额+积分支付
+     * WALLET_INTEGRAL
      */
-    WALLETPOINT("walletPointPlugin", "余额+积分支付"),
+    WALLETINTEGRAL("walletIntegralPlugin", "余额+积分支付"),
     /**
      * 线下转账
      */

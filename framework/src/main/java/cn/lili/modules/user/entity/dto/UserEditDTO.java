@@ -20,8 +20,6 @@ import java.util.Date;
 @Data
 public class UserEditDTO {
 
-
-
     @ApiModelProperty(value = "会员头像")
     private String avatarUrl;
     private  String userNick;

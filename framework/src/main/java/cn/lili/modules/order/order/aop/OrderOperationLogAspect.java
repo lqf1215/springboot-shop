@@ -41,7 +41,7 @@ public class OrderOperationLogAspect {
             if (UserContext.getCurrentUser() != null) {
                 //日志对象拼接
                 userName = UserContext.getCurrentUser().getUsername();
-                id = UserContext.getCurrentUser().getId();
+                id = String.valueOf(UserContext.getCurrentUser().getId());
                 role = UserContext.getCurrentUser().getRole().getRole();
             }
             Map<String, String> orderLogPoints = spelFormat(joinPoint);

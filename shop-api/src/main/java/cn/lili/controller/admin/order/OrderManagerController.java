@@ -55,7 +55,6 @@ public class OrderManagerController {
     private OrderPriceService orderPriceService;
 
 
-
     @ApiOperation(value = "查询订单列表分页")
     @GetMapping
     public ResultMessage<IPage<OrderSimpleVO>> queryMineOrder(OrderSearchParams orderSearchParams) {
@@ -129,6 +128,7 @@ public class OrderManagerController {
         return ResultUtil.data(orderService.getTraces(orderSn));
     }
 
+
     @ApiOperation(value = "根据核验码获取订单信息")
     @ApiImplicitParam(name = "verificationCode", value = "核验码", required = true, paramType = "path")
     @GetMapping(value = "/getOrderByVerificationCode/{verificationCode}")
@@ -165,6 +165,5 @@ public class OrderManagerController {
         orderService.batchDeliver(files);
         return ResultUtil.success(ResultCode.SUCCESS);
     }
-
 
 }

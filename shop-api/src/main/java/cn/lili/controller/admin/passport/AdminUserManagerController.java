@@ -71,7 +71,12 @@ public class AdminUserManagerController {
         }
     }
 
-
+    @ApiOperation(value = "注销接口")
+    @PostMapping("/logout")
+    public ResultMessage<Object> logout() {
+        this.userService.logout(UserEnums.MANAGER);
+        return ResultUtil.success();
+    }
 
     @ApiOperation(value = "刷新token")
     @GetMapping("/refresh/{refreshToken}")

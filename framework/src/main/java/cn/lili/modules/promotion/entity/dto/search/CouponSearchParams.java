@@ -27,7 +27,7 @@ public class CouponSearchParams extends BasePromotionsSearchParams implements Se
     private static final String RANGE_DAY_TYPE_COLUMN = "range_day_type";
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "优惠券名称")
     private String couponName;

@@ -29,7 +29,7 @@ public interface UserPointsHistoryMapper extends BaseMapper<UserPointsHistory> {
      * @return 积分数量
      */
     @Select("SELECT SUM( variable_point ) FROM li_user_points_history WHERE point_type = #{pointType} AND user_id=#{userId}")
-    Long getMemberPointsHistoryVO(String pointType, String userId);
+    Long getMemberPointsHistoryVO(String pointType, Long userId);
 
 
 }

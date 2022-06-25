@@ -100,7 +100,7 @@ public class PintuanServiceImpl extends AbstractPromotionsServiceImpl<PintuanMap
         searchParams.setPromotionId(pintuanId);
         searchParams.setOrderPromotionType(PromotionTypeEnum.PINTUAN.name());
         searchParams.setParentOrderSn("");
-        searchParams.setUserID("");
+        searchParams.setUserId(0L);
         List<Order> orders = orderService.queryListByParams(searchParams);
         //遍历订单状态为已支付，为团长的拼团订单
         for (Order order : orders) {
@@ -220,7 +220,10 @@ public class PintuanServiceImpl extends AbstractPromotionsServiceImpl<PintuanMap
             //发送促销活动开始的延时任务
             this.timeTrigger.addDelay(timeTriggerMsg);
         }
-
+        if (promotions.getEndTime() == null && promotions.getStartTime() == null) {
+            //过滤父级拼团订单，根据父级拼团订单分组
+            this.orderService.checkFictitiousOrder(promotions.getId(), promotions.getRequiredNum(), promotions.getFictitious());
+        }
         return result;
     }
 

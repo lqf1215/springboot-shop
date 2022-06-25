@@ -31,9 +31,10 @@ public interface FreightTemplateService extends IService<FreightTemplate> {
     /**
      * 获取商家的运费模板
      *
+     * @param storeId
      * @return 运费模板列表
      */
-    List<FreightTemplateVO> getFreightTemplateList();
+    List<FreightTemplateVO> getFreightTemplateList(String storeId);
 
     /**
      * 获取运费模板详细信息

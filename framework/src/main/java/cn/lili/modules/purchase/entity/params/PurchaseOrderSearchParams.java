@@ -14,7 +14,7 @@ import lombok.Data;
 public class PurchaseOrderSearchParams extends PageVO {
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "分类ID")
     private String categoryId;

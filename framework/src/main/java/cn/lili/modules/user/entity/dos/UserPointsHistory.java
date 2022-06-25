@@ -41,7 +41,7 @@ public class UserPointsHistory extends BaseIdEntity {
     private Date createTime;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;

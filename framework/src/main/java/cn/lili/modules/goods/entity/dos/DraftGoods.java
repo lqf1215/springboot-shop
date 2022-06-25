@@ -39,6 +39,8 @@ public class DraftGoods extends BaseEntity {
     private Double price;
 
 
+    @ApiModelProperty(value = "品牌id")
+    private String brandId;
 
     @ApiModelProperty(value = "分类path")
     private String categoryPath;

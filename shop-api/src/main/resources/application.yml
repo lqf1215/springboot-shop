@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8080
 
   servlet:
     context-path: /
@@ -32,10 +32,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
   # 要在其中注册的Spring Boot Admin Server的URL。
-#  boot:
-#    admin:
-#      client:
-#        url: http://211.149.237.96:8000
+  boot:
+    admin:
+      client:
+        url: http://211.149.237.96:8000
   # 文件大小上传配置
   servlet:
     multipart:
@@ -169,20 +169,19 @@ ignored:
     - /**/*.ico
     - /buyer/user/address/**
     - /buyer/order/order/**
-    - /buyer/order/order/**
     - /buyer/trade/carts/**
     - /common/common/region/**
 
 # Swagger界面内容配置
 swagger:
-  title: 恒生商城接口文档
-  description: 恒生商城 Documentation
+  title: lili API接口文档
+  description: lili Api Documentation
   version: 1.0.0
-  termsOfServiceUrl: hello
+  termsOfServiceUrl: https://pickmall.cn
   contact:
     name: lili
-    url: hello
-    email: hello
+    url: https://pickmall.cn
+    email: admin@pickmall.com
 
 # Mybatis-plus
 mybatis-plus:
@@ -254,19 +253,19 @@ lili:
     maxPoolSize: 50
     queueCapacity: 50
   data:
-#    elasticsearch:
-#      cluster-name: elasticsearch
-#      cluster-nodes: 211.149.237.96:9200
-#      index:
-#        number-of-replicas: 0
-#        number-of-shards: 3
-#      index-prefix: lili
-#      schema: http
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 211.149.237.96:9200
+      index:
+        number-of-replicas: 0
+        number-of-shards: 3
+      index-prefix: lili
+      schema: http
     #      account:
     #        username: elastic
     #        password: LiLiShopES
-#    logstash:
-#      server: 211.149.237.96:4560
+    logstash:
+      server: 211.149.237.96:4560
     rocketmq:
       promotion-topic: lili_promotion_topic
       promotion-group: lili_promotion_group

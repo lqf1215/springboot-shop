@@ -17,7 +17,12 @@ public class ResultUtil<T> {
     /**
      * 正常响应
      */
-    private static final Integer SUCCESS = 200;
+    private static final Integer SUCCESS = 1;
+
+    /**
+     * 显示 toast 当错误的时候判断1 显示
+     */
+    private static final Integer SHOW = 1;
 
 
     /**
@@ -26,8 +31,9 @@ public class ResultUtil<T> {
     public ResultUtil() {
         resultMessage = new ResultMessage<>();
         resultMessage.setSuccess(true);
-        resultMessage.setMessage("success");
+        resultMessage.setMsg("success");
         resultMessage.setCode(SUCCESS);
+        resultMessage.setShow(SHOW);
     }
 
     /**
@@ -37,7 +43,8 @@ public class ResultUtil<T> {
      * @return 消息
      */
     public ResultMessage<T> setData(T t) {
-        this.resultMessage.setResult(t);
+        this.resultMessage.setData(t);
+        this.resultMessage.setShow(SHOW);
         return this.resultMessage;
     }
 
@@ -50,8 +57,9 @@ public class ResultUtil<T> {
      */
     public ResultMessage<T> setSuccessMsg(ResultCode resultCode) {
         this.resultMessage.setSuccess(true);
-        this.resultMessage.setMessage(resultCode.message());
+        this.resultMessage.setMsg(resultCode.message());
         this.resultMessage.setCode(resultCode.code());
+        this.resultMessage.setShow(SHOW);
         return this.resultMessage;
 
     }
@@ -112,8 +120,9 @@ public class ResultUtil<T> {
      */
     public ResultMessage<T> setErrorMsg(ResultCode resultCode) {
         this.resultMessage.setSuccess(false);
-        this.resultMessage.setMessage(resultCode.message());
+        this.resultMessage.setMsg(resultCode.message());
         this.resultMessage.setCode(resultCode.code());
+        this.resultMessage.setShow(SHOW);
         return this.resultMessage;
     }
 
@@ -126,8 +135,9 @@ public class ResultUtil<T> {
      */
     public ResultMessage<T> setErrorMsg(Integer code, String msg) {
         this.resultMessage.setSuccess(false);
-        this.resultMessage.setMessage(msg);
+        this.resultMessage.setMsg(msg);
         this.resultMessage.setCode(code);
+        this.resultMessage.setShow(SHOW);
         return this.resultMessage;
     }
 

@@ -35,7 +35,7 @@ public interface UserSignService extends IService<UserSign> {
      * @param userId 会员id
      * @param day      签到天数
      */
-    void memberSignSendPoint(String userId, Integer day);
+    void memberSignSendPoint(Long userId, Integer day);
 
 
 }

@@ -1,6 +1,5 @@
 package cn.lili.modules.user.entity.dos;
 
-import cn.lili.modules.user.entity.enums.UserReceiptEnum;
 import cn.lili.mybatis.BaseIdEntity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -37,13 +36,13 @@ public class UserReceipt extends BaseIdEntity {
     private String receiptContent;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;
 
     /**
-     * @see UserReceiptEnum
+     * @see cn.lili.modules.user.entity.enums.MemberReceiptEnum
      */
     @ApiModelProperty(value = "发票类型")
     private String receiptType;

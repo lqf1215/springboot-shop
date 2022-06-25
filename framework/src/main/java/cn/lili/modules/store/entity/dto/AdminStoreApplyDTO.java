@@ -18,7 +18,7 @@ public class AdminStoreApplyDTO {
 
     /****店铺基本信息***/
     @ApiModelProperty(value = "会员ID")
-    public String userId;
+    public Long userId;
 
     @Size(min = 2, max = 200, message = "店铺名称长度为2-200位")
     @NotBlank(message = "店铺名称不能为空")

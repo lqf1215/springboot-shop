@@ -17,11 +17,11 @@ public class CartBase implements Serializable {
 
     private static final long serialVersionUID = -5172752506920017597L;
 
-    @ApiModelProperty(value = "卖家id")
-    private String storeId;
-
-    @ApiModelProperty(value = "卖家姓名")
-    private String storeName;
+//    @ApiModelProperty(value = "卖家id")
+//    private String storeId;
+//
+//    @ApiModelProperty(value = "卖家姓名")
+//    private String storeName;
 
     @ApiModelProperty(value = "此商品价格流水计算")
     private PriceDetailDTO priceDetailDTO;

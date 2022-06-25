@@ -51,12 +51,12 @@ public class UserTokenGenerate extends AbstractTokenGenerate<User> {
             clientTypeEnum = ClientTypeEnum.UNKNOWN;
         }
         //记录最后登录时间，客户端类型
-        user.setUpdateTime(new Date());
+//        user.setLastLoginTime(new Date());
 //        user.setClientEnum(clientTypeEnum.name());
         String destination = rocketmqCustomProperties.getMemberTopic() + ":" + MemberTagsEnum.MEMBER_LOGIN.name();
         rocketMQTemplate.asyncSend(destination, user, RocketmqSendCallbackBuilder.commonCallback());
 
-        AuthUser authUser = new AuthUser(user.getName(), ""+user.getId(), user.getName(), user.getName(), UserEnums.MEMBER);
+        AuthUser authUser = new AuthUser(user.getName(), user.getId(), user.getName(), user.getAvatarUrl(), UserEnums.MEMBER);
         //登陆成功生成token
         return tokenUtil.createToken(user.getName(), authUser, longTerm, UserEnums.MEMBER);
     }

@@ -99,7 +99,7 @@ public class UploadController {
             if (authUser.getRole().equals(UserEnums.STORE)) {
                 newFile.setOwnerId(authUser.getStoreId());
             } else {
-                newFile.setOwnerId(authUser.getId());
+                newFile.setOwnerId(""+authUser.getId());
             }
             fileService.save(newFile);
         } catch (Exception e) {

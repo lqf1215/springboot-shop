@@ -33,7 +33,7 @@ public interface UserReceiptService extends IService<UserReceipt> {
      * @param userId           会员ID
      * @return 操作状态
      */
-    Boolean addMemberReceipt(UserReceiptAddVO userReceiptAddVO, String userId);
+    Boolean addMemberReceipt(UserReceiptAddVO userReceiptAddVO, Long userId);
 
     /**
      * 修改会员发票信息
@@ -42,7 +42,7 @@ public interface UserReceiptService extends IService<UserReceipt> {
      * @param userId           会员ID
      * @return 操作状态
      */
-    Boolean editMemberReceipt(UserReceiptAddVO userReceiptAddVO, String userId);
+    Boolean editMemberReceipt(UserReceiptAddVO userReceiptAddVO, Long userId);
 
     /**
      * 删除会员发票信息

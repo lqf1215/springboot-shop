@@ -108,6 +108,14 @@ public interface OrderService extends IService<Order> {
      */
     OrderDetailVO queryDetail(String orderSn);
 
+    /**
+     * 创建订单
+     * 1.检查交易信息
+     * 2.循环交易购物车列表，创建订单以及相关信息
+     *
+     * @param tradeDTO 交易DTO
+     */
+    void intoDB(TradeDTO tradeDTO);
 
     /**
      * 订单付款
@@ -238,7 +246,10 @@ public interface OrderService extends IService<Order> {
      * 获取待发货订单编号列表
      *
      * @param response      响应
+     * @param logisticsName 店铺已选择物流公司列表
      */
+//    void getBatchDeliverList(HttpServletResponse response, List<String> logisticsName);
+
     void getBatchDeliverList(HttpServletResponse response);
 
     /**
@@ -266,5 +277,13 @@ public interface OrderService extends IService<Order> {
      */
     IPage<PaymentLog> queryPaymentLogs(IPage<PaymentLog> page, Wrapper<PaymentLog> queryWrapper);
 
-
+    /**
+     * 检查是否开始虚拟成团
+     *
+     * @param pintuanId 拼团活动id
+     * @param requiredNum 成团人数
+     * @param fictitious 是否开启成团
+     * @return 是否成功
+     */
+    boolean checkFictitiousOrder(String pintuanId, Integer requiredNum, Boolean fictitious);
 }

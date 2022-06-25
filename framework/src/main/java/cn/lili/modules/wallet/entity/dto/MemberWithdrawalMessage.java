@@ -17,7 +17,7 @@ public class MemberWithdrawalMessage {
     private Double price;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "提现状态")
     private String status;

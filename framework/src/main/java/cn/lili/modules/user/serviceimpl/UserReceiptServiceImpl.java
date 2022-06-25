@@ -42,7 +42,7 @@ public class UserReceiptServiceImpl extends ServiceImpl<UserReceiptMapper, UserR
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean addMemberReceipt(UserReceiptAddVO userReceiptAddVO, String userId) {
+    public Boolean addMemberReceipt(UserReceiptAddVO userReceiptAddVO, Long userId) {
         //校验发票抬头是否重复
         List<UserReceipt> receipts = this.baseMapper.selectList(new QueryWrapper<UserReceipt>()
                 .eq("user_id", userId)
@@ -81,7 +81,7 @@ public class UserReceiptServiceImpl extends ServiceImpl<UserReceiptMapper, UserR
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean editMemberReceipt(UserReceiptAddVO userReceiptAddVO, String userId) {
+    public Boolean editMemberReceipt(UserReceiptAddVO userReceiptAddVO, Long userId) {
         //根据会员id查询发票信息
         UserReceipt userReceiptDb = this.baseMapper.selectById(userReceiptAddVO.getId());
         if (userReceiptDb != null) {

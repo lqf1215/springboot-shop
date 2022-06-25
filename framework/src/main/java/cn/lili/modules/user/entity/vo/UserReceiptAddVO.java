@@ -1,6 +1,5 @@
 package cn.lili.modules.user.entity.vo;
 
-import cn.lili.modules.user.entity.enums.UserReceiptEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,7 +30,7 @@ public class UserReceiptAddVO {
     private String receiptContent;
 
     /**
-     * @see UserReceiptEnum
+     * @see cn.lili.modules.user.entity.enums.MemberReceiptEnum
      */
     @ApiModelProperty(value = "发票类型")
     private String receiptType;

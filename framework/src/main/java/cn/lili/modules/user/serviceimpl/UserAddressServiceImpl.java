@@ -1,5 +1,6 @@
 package cn.lili.modules.user.serviceimpl;
 
+import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.PageVO;
 import cn.lili.modules.user.entity.dos.UserAddress;
 import cn.lili.modules.user.mapper.UserAddressMapper;
@@ -13,6 +14,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 /**
  * 收货地址业务层实现
  *
@@ -23,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress> implements UserAddressService {
 
     @Override
-    public IPage<UserAddress> getAddressByMember(PageVO page, Integer userId) {
+    public IPage<UserAddress> getAddressByMember(PageVO page, Long userId) {
         return this.page(PageUtil.initPage(page),
                 new QueryWrapper<UserAddress>()
                         .eq("user_id", userId));
@@ -34,7 +37,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     public UserAddress getMemberAddress(String id) {
         return this.getOne(
                 new QueryWrapper<UserAddress>()
-                        .eq("user_id",23)
+                        .eq("user_id", 23)
                         .eq("id", id));
     }
 
@@ -47,7 +50,6 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     public UserAddress getDefaultMemberAddress() {
         return this.getOne(
                 new QueryWrapper<UserAddress>()
-//                        .eq("user_id", Objects.requireNonNull(UserContext.getCurrentUser()).getId())
                         .eq("user_id", 23)
                         .eq("is_default", true));
     }
@@ -68,8 +70,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     public UserAddress updateMemberAddress(UserAddress userAddress) {
         UserAddress originalUserAddress = this.getMemberAddress(userAddress.getId());
         if (originalUserAddress != null &&
-//                originalMemberAddress.getUserId().equals(Objects.requireNonNull(UserContext.getCurrentUser()).getId())) {
-            originalUserAddress.getUserId().equals(23)) {
+                originalUserAddress.getUserId()==23L ){
 
             if (userAddress.getIsDefault() == null) {
                 userAddress.setIsDefault(false);
@@ -99,7 +100,6 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
             //将会员的地址修改为非默认地址
             LambdaUpdateWrapper<UserAddress> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
             lambdaUpdateWrapper.set(UserAddress::getIsDefault, false);
-//            lambdaUpdateWrapper.eq(MemberAddress::getUserId, memberAddress.getUserId());
             lambdaUpdateWrapper.eq(UserAddress::getUserId, userAddress.getUserId());
             this.update(lambdaUpdateWrapper);
         }

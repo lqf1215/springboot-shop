@@ -13,6 +13,7 @@ import cn.lili.mybatis.util.PageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.elasticsearch.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,7 +67,10 @@ public class StoreMessageServiceImpl extends ServiceImpl<StoreMessageMapper, Sto
     public boolean editStatus(String status, String id) {
         StoreMessage storeMessage = this.getById(id);
         if (storeMessage != null) {
-
+            //校验权限
+            if (!storeMessage.getStoreId().equals(UserContext.getCurrentUser().getStoreId())) {
+                throw new ResourceNotFoundException(ResultCode.USER_AUTHORITY_ERROR.message());
+            }
             storeMessage.setStatus(status);
             return this.updateById(storeMessage);
         }

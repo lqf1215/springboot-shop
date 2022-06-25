@@ -36,8 +36,8 @@ public class DraftGoodsManagerController {
     @ApiOperation(value = "分页获取草稿商品列表")
     @GetMapping(value = "/page")
     public ResultMessage<IPage<DraftGoods>> getDraftGoodsByPage(DraftGoodsSearchParams searchParams) {
-        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
-        searchParams.setStoreId(storeId);
+//        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+//        searchParams.setStoreId(storeId);
         return ResultUtil.data(draftGoodsService.getDraftGoods(searchParams));
     }
 
@@ -51,12 +51,12 @@ public class DraftGoodsManagerController {
     @ApiOperation(value = "保存草稿商品")
     @PostMapping(value = "/save", consumes = "application/json", produces = "application/json")
     public ResultMessage<String> saveDraftGoods(@RequestBody DraftGoodsDTO draftGoodsVO) {
-        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
-        if (draftGoodsVO.getStoreId() == null) {
-            draftGoodsVO.setStoreId(storeId);
-        } else if (draftGoodsVO.getStoreId() != null && !storeId.equals(draftGoodsVO.getStoreId())) {
-            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
-        }
+//        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+//        if (draftGoodsVO.getStoreId() == null) {
+//            draftGoodsVO.setStoreId(storeId);
+//        } else if (draftGoodsVO.getStoreId() != null && !storeId.equals(draftGoodsVO.getStoreId())) {
+//            throw new ServiceException(ResultCode.USER_AUTHORITY_ERROR);
+//        }
         draftGoodsService.saveGoodsDraft(draftGoodsVO);
         return ResultUtil.success();
     }

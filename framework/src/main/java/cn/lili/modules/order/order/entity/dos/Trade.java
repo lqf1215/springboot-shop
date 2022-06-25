@@ -30,7 +30,7 @@ public class Trade extends BaseEntity {
     private String sn;
 
     @ApiModelProperty(value = "买家id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "买家用户名")
     private String userName;

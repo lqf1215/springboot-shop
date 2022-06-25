@@ -186,7 +186,18 @@ public class Swagger2Config {
                 .securitySchemes(securitySchemes())
                 .securityContexts(securityContexts());
     }
-
+    @Bean
+    public Docket distributionRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("分销")
+                .apiInfo(apiInfo()).select()
+                //扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.basePackage("cn.lili.controller.distribution"))
+                .paths(PathSelectors.any())
+                .build()
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+    }
 
     @Bean
     public Docket statisticsRestApi() {

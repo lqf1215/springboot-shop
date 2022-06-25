@@ -6,7 +6,6 @@ import cn.lili.modules.order.aftersale.entity.dto.AfterSaleDTO;
 import cn.lili.modules.order.aftersale.entity.vo.AfterSaleApplyVO;
 import cn.lili.modules.order.aftersale.entity.vo.AfterSaleSearchParams;
 import cn.lili.modules.order.aftersale.entity.vo.AfterSaleVO;
-import cn.lili.modules.store.entity.dto.StoreAfterSaleAddressDTO;
 import cn.lili.modules.system.entity.vo.Traces;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -126,7 +125,6 @@ public interface AfterSaleService extends IService<AfterSale> {
      * @return 售后服务
      */
     AfterSale cancel(String afterSaleSn);
-
 
 
 

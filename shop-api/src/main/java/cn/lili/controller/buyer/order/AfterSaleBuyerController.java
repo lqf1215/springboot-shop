@@ -14,7 +14,6 @@ import cn.lili.modules.order.aftersale.entity.vo.AfterSaleVO;
 import cn.lili.modules.order.aftersale.service.AfterSaleLogService;
 import cn.lili.modules.order.aftersale.service.AfterSaleReasonService;
 import cn.lili.modules.order.aftersale.service.AfterSaleService;
-import cn.lili.modules.store.entity.dto.StoreAfterSaleAddressDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -113,7 +112,12 @@ public class AfterSaleBuyerController {
         return ResultUtil.data(afterSaleService.cancel(afterSaleSn));
     }
 
-
+//    @ApiOperation(value = "获取商家售后收件地址")
+//    @ApiImplicitParam(name = "sn", value = "售后单号", required = true, paramType = "path")
+//    @GetMapping(value = "/getStoreAfterSaleAddress/{sn}")
+//    public ResultMessage<StoreAfterSaleAddressDTO> getStoreAfterSaleAddress(@NotNull(message = "售后单号") @PathVariable("sn") String sn) {
+//        return ResultUtil.data(afterSaleService.getStoreAfterSaleAddressDTO(sn));
+//    }
 
     @ApiOperation(value = "获取售后原因")
     @ApiImplicitParam(name = "serviceType", value = "售后类型", required = true, paramType = "path", allowableValues = "CANCEL,RETURN_GOODS,RETURN_MONEY,COMPLAIN")

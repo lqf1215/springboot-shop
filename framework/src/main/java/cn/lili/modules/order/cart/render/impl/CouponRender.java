@@ -146,7 +146,7 @@ public class CouponRender implements CartRenderStep {
         if (Boolean.TRUE.equals(memberCoupon.getPlatformFlag())) {
             filterSku = cartSkuVOS;
         } else {
-            filterSku = cartSkuVOS.stream().filter(cartSkuVO -> cartSkuVO.getStoreId().equals(memberCoupon.getStoreId())).collect(Collectors.toList());
+            filterSku = cartSkuVOS;
         }
         if (filterSku == null || filterSku.isEmpty()) {
             return Collections.emptyList();

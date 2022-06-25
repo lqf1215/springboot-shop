@@ -2,7 +2,7 @@ package cn.lili.consumer.timetask.handler.impl.statistics;
 
 import cn.lili.consumer.timetask.handler.EveryDayExecute;
 import cn.lili.modules.statistics.entity.dos.MemberStatisticsData;
-import cn.lili.modules.statistics.service.MemberStatisticsService;
+import cn.lili.modules.statistics.service.UserStatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class MemberStatisticsExecute implements EveryDayExecute {
      * 会员统计
      */
     @Autowired
-    private MemberStatisticsService memberStatisticsService;
+    private UserStatisticsService userStatisticsService;
 
     @Override
     public void execute() {
@@ -43,11 +43,11 @@ public class MemberStatisticsExecute implements EveryDayExecute {
             calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 1);
             startTime = calendar.getTime();
             MemberStatisticsData memberStatisticsData = new MemberStatisticsData();
-            memberStatisticsData.setMemberCount(memberStatisticsService.memberCount(endTime));
+            memberStatisticsData.setMemberCount(userStatisticsService.memberCount(endTime));
             memberStatisticsData.setCreateDate(startTime);
-            memberStatisticsData.setActiveQuantity(memberStatisticsService.activeQuantity(startTime));
-            memberStatisticsData.setNewlyAdded(memberStatisticsService.newlyAdded(startTime, endTime));
-            memberStatisticsService.save(memberStatisticsData);
+            memberStatisticsData.setActiveQuantity(userStatisticsService.activeQuantity(startTime));
+            memberStatisticsData.setNewlyAdded(userStatisticsService.newlyAdded(startTime, endTime));
+            userStatisticsService.save(memberStatisticsData);
         } catch (Exception e) {
             log.error("每日会员统计功能异常：", e);
         }

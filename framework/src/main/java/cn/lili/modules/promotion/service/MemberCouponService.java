@@ -22,7 +22,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param couponId 优惠券编号
      * @param userId 会员
      */
-    void checkCouponLimit(String couponId, String userId);
+    void checkCouponLimit(String couponId, Long userId);
 
     /**
      * 领取优惠券
@@ -31,7 +31,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param userId   会员
      * @param userName 会员名称
      */
-    void receiveBuyerCoupon(String couponId, String userId, String userName);
+    void receiveBuyerCoupon(String couponId, Long userId, String userName);
 
     /**
      * 领取优惠券
@@ -40,7 +40,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param userId   会员
      * @param userName 会员名称
      */
-    void receiveCoupon(String couponId, String userId, String userName);
+    void receiveCoupon(String couponId, Long userId, String userName);
 
     /**
      * 获取会员优惠券列表
@@ -65,7 +65,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param userId 会员id
      * @return 会员优惠券列表
      */
-    List<MemberCoupon> getMemberCoupons(String userId);
+    List<MemberCoupon> getMemberCoupons(Long userId);
 
     /**
      * 获取会员优惠券列表
@@ -85,7 +85,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param totalPrice 当前商品总价
      * @return 会员优惠券列表
      */
-    List<MemberCoupon> getCurrentGoodsCanUse(String userId, List<String> couponIds, Double totalPrice);
+    List<MemberCoupon> getCurrentGoodsCanUse(Long userId, List<String> couponIds, Double totalPrice);
 
     /**
      * 获取当前会员全品类优惠券
@@ -94,7 +94,7 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      * @param storeId  店铺id
      * @return 会员优惠券列表
      */
-    List<MemberCoupon> getAllScopeMemberCoupon(String userId, List<String> storeId);
+    List<MemberCoupon> getAllScopeMemberCoupon(Long userId, List<String> storeId);
 
     /**
      * 获取会员优惠券
@@ -116,21 +116,21 @@ public interface MemberCouponService extends IService<MemberCoupon> {
      *
      * @param ids 会员优惠券id
      */
-    void used(String userId, List<String> ids);
+    void used(Long userId, List<String> ids);
 
     /**
      * 作废当前会员优惠券
      *
      * @param id id
      */
-    void cancellation(String userId, String id);
+    void cancellation(Long userId, String id);
 
     /**
      * 作废无效的会员优惠券
      *
      * @return 是否操作成功
      */
-    boolean expireInvalidMemberCoupon(String userId);
+    boolean expireInvalidMemberCoupon(Long userId);
 
     /**
      * 关闭会员优惠券

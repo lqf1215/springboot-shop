@@ -15,7 +15,7 @@ import java.util.Map;
 public class NoticeMessageDTO {
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "消息节点")
     private NoticeMessageNodeEnum noticeMessageNodeEnum;

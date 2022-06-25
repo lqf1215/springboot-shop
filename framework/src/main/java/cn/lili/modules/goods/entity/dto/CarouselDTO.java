@@ -1,16 +1,12 @@
 package cn.lili.modules.goods.entity.dto;
 
-import cn.lili.common.validation.EnumValue;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品编辑DTO

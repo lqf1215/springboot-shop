@@ -16,7 +16,6 @@ import cn.lili.modules.statistics.entity.vo.OrderStatisticsDataVO;
 import cn.lili.modules.statistics.mapper.OrderStatisticsMapper;
 import cn.lili.modules.statistics.service.OrderStatisticsService;
 import cn.lili.modules.statistics.service.PlatformViewService;
-import cn.lili.modules.statistics.service.StoreFlowStatisticsService;
 import cn.lili.modules.statistics.util.StatisticsDateUtil;
 import cn.lili.mybatis.util.PageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -44,8 +43,8 @@ public class OrderStatisticsServiceImpl extends ServiceImpl<OrderStatisticsMappe
     @Autowired
     private PlatformViewService platformViewService;
 
-    @Autowired
-    private StoreFlowStatisticsService storeFlowStatisticsService;
+//    @Autowired
+//    private StoreFlowStatisticsService storeFlowStatisticsService;
 
     @Override
     public OrderOverviewVO overview(StatisticsQueryParam statisticsQueryParam) {
@@ -56,7 +55,7 @@ public class OrderStatisticsServiceImpl extends ServiceImpl<OrderStatisticsMappe
         /**
          * 组织统计初始化
          */
-        storeFlowStatisticsService.overview(dates, orderOverviewVO, statisticsQueryParam);
+//        storeFlowStatisticsService.overview(dates, orderOverviewVO, statisticsQueryParam);
         //访客数
         Integer uv = platformViewService.countUv(statisticsQueryParam);
         if (uv != null) {

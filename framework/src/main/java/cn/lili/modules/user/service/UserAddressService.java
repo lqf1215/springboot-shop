@@ -20,7 +20,7 @@ public interface UserAddressService extends IService<UserAddress> {
      * @param userId 会员ID
      * @return 会员地址分页列表
      */
-    IPage<UserAddress> getAddressByMember(PageVO page, Integer userId);
+    IPage<UserAddress> getAddressByMember(PageVO page, Long userId);
 
     /**
      * 根据地址ID获取当前会员地址信息

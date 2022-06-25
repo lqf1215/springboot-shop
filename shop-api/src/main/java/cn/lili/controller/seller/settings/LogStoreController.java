@@ -5,6 +5,7 @@ import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.PageVO;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.common.vo.SearchVO;
+import cn.lili.modules.permission.service.SystemLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,17 @@ import java.util.Objects;
 @Api(tags = "店铺端,日志管理接口")
 @RequestMapping("/store/settings/log")
 public class LogStoreController {
+    @Autowired
+    private SystemLogService systemLogService;
 
-
+    @GetMapping(value = "/getAllByPage")
+    @ApiOperation(value = "分页获取全部")
+    public ResultMessage<Object> getAllByPage(@RequestParam(required = false) Integer type,
+                                              @RequestParam String key,
+                                              String operatorName,
+                                              SearchVO searchVo,
+                                              PageVO pageVo) {
+        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+        return ResultUtil.data(systemLogService.queryLog(storeId, operatorName, key, searchVo, pageVo));
+    }
 }

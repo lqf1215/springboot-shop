@@ -36,7 +36,7 @@ public class StoreUserController {
         AuthUser tokenUser = UserContext.getCurrentUser();
         if (tokenUser != null) {
             User user = userService.findByUsername(tokenUser.getUsername());
-            user.setPwd(null);
+//            user.setPassword(null);
             return ResultUtil.data(user);
         }
         throw new ServiceException(ResultCode.USER_NOT_LOGIN);

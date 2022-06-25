@@ -9,7 +9,7 @@
 	<id>framework</id>
 
 	<classpath>
-		<dir name="F:/git/lilishop/lilishop-simplify/framework/target/classes">
+		<dir name="E:/git/lilishop-simplify/framework/target/classes">
 		</dir>
 	</classpath>
 

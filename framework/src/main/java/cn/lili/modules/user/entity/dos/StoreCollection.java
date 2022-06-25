@@ -25,7 +25,7 @@ public class StoreCollection extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "店铺id")
     private String storeId;

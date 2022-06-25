@@ -55,7 +55,7 @@ public class AfterSaleApplyVO {
     private Boolean returnMoney;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
 
 

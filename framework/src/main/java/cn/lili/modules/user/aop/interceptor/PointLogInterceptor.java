@@ -45,9 +45,9 @@ public class PointLogInterceptor {
                 type = obj[1].toString();
             }
             // 会员ID
-            String userId = "";
+            Long userId = Long.valueOf(0);
             if (obj[2] != null) {
-                userId = obj[2].toString();
+                userId = (Long) obj[2];
             }
             // 变动积分为0，则直接返回
             if (point == 0) {
@@ -57,22 +57,22 @@ public class PointLogInterceptor {
             //根据会员id查询会员信息
             User user = userService.getById(userId);
             if (user != null) {
-                UserPointsHistory memberPointsHistory = new UserPointsHistory();
-                memberPointsHistory.setUserId(""+user.getId());
-                memberPointsHistory.setUserName(user.getName());
-                memberPointsHistory.setPointType(type);
+                UserPointsHistory userPointsHistory = new UserPointsHistory();
+                userPointsHistory.setUserId(user.getId());
+                userPointsHistory.setUserName(user.getName());
+                userPointsHistory.setPointType(type);
 
-                memberPointsHistory.setVariablePoint(point);
+                userPointsHistory.setVariablePoint(point);
                 if (type.equals(PointTypeEnum.INCREASE.name())) {
-//                    memberPointsHistory.setBeforePoint(user.getPoint() - point);
+//                    userPointsHistory.setBeforePoint(user.getPoint() - point);
                 } else {
-//                    memberPointsHistory.setBeforePoint(user.getPoint() + point);
+//                    userPointsHistory.setBeforePoint(user.getPoint() + point);
                 }
 
-//                memberPointsHistory.setPoint(user.getPoint());
-                memberPointsHistory.setContent(obj[3] == null ? "" : obj[3].toString());
-                memberPointsHistory.setCreateBy("系统");
-                userPointsHistoryService.save(memberPointsHistory);
+//                userPointsHistory.setPoint(user.getPoint());
+                userPointsHistory.setContent(obj[3] == null ? "" : obj[3].toString());
+                userPointsHistory.setCreateBy("系统");
+                userPointsHistoryService.save(userPointsHistory);
             }
         } catch (Exception e) {
             log.error("积分操作错误", e);

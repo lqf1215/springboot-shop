@@ -96,9 +96,16 @@ public enum ResultCode {
     SPEC_DELETE_ERROR(13003, "分类已经绑定此规格，请先解除关联"),
 
     /**
-     * 轮播
+     * 品牌
      */
-    Carousel_NOT_EXIST(14001, "轮播不存在"),
+    BRAND_SAVE_ERROR(14001, "品牌添加失败"),
+    BRAND_UPDATE_ERROR(14002, "品牌修改失败"),
+    BRAND_DISABLE_ERROR(14003, "品牌禁用失败"),
+    BRAND_DELETE_ERROR(14004, "品牌删除失败"),
+    BRAND_NAME_EXIST_ERROR(20002, "品牌名称重复！"),
+    BRAND_USE_DISABLE_ERROR(20003, "分类已经绑定品牌，请先解除关联"),
+    BRAND_BIND_GOODS_ERROR(20005, "品牌已经绑定商品，请先解除关联"),
+    BRAND_NOT_EXIST(20004, "品牌不存在"),
 
     /**
      * 用户
@@ -193,6 +200,9 @@ public enum ResultCode {
     PAY_POINT_ENOUGH(32010, "积分不足，不能兑换"),
     PAY_NOT_EXIST_ORDER(32011, "支付订单不存在"),
     CAN_NOT_RECHARGE_WALLET(32012, "不能使用余额进行充值"),
+    PAY_PASSWORD_ERROR(32013, "支付密码不正确"),
+
+
 
 
     /**

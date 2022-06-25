@@ -30,22 +30,22 @@ public class UserPointsHistoryServiceImpl extends ServiceImpl<UserPointsHistoryM
     private UserService userService;
 
     @Override
-    public UserPointsHistoryVO getMemberPointsHistoryVO(String userId) {
+    public UserPointsHistoryVO getMemberPointsHistoryVO(Long userId) {
         //获取会员积分历史
         User user = userService.getById(userId);
-        UserPointsHistoryVO userPointsHistoryVO = new UserPointsHistoryVO();
+        UserPointsHistoryVO memberPointsHistoryVO = new UserPointsHistoryVO();
         if (user != null) {
-//            userPointsHistoryVO.setPoint(user.getPoint());
-//            userPointsHistoryVO.setTotalPoint(user.getTotalPoint());
-            return userPointsHistoryVO;
+//            memberPointsHistoryVO.setPoint(user.getPoint());
+//            memberPointsHistoryVO.setTotalPoint(user.getTotalPoint());
+            return memberPointsHistoryVO;
         }
         return new UserPointsHistoryVO();
     }
 
     @Override
-    public IPage<UserPointsHistory> MemberPointsHistoryList(PageVO page, String userId, String userName) {
+    public IPage<UserPointsHistory> MemberPointsHistoryList(PageVO page, Long userId, String userName) {
         LambdaQueryWrapper<UserPointsHistory> lambdaQueryWrapper = new LambdaQueryWrapper<UserPointsHistory>()
-                .eq(CharSequenceUtil.isNotEmpty(userId), UserPointsHistory::getUserId, userId)
+                .eq(CharSequenceUtil.isNotEmpty(""+userId), UserPointsHistory::getUserId, userId)
                 .like(CharSequenceUtil.isNotEmpty(userName), UserPointsHistory::getUserName, userName);
         //如果排序为空，则默认创建时间倒序
         if (CharSequenceUtil.isEmpty(page.getSort())) {

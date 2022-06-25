@@ -15,7 +15,7 @@ import cn.lili.modules.statistics.entity.enums.SearchTypeEnum;
 import cn.lili.modules.statistics.entity.vo.OnlineMemberVO;
 import cn.lili.modules.statistics.entity.vo.PlatformViewVO;
 import cn.lili.modules.statistics.mapper.PlatformViewMapper;
-import cn.lili.modules.statistics.service.MemberStatisticsService;
+import cn.lili.modules.statistics.service.UserStatisticsService;
 import cn.lili.modules.statistics.service.PlatformViewService;
 import cn.lili.modules.statistics.util.StatisticsDateUtil;
 import cn.lili.modules.statistics.util.StatisticsSuffix;
@@ -53,7 +53,7 @@ public class PlatformViewServiceImpl extends ServiceImpl<PlatformViewMapper, Pla
      * 会员
      */
     @Autowired
-    private MemberStatisticsService memberStatisticsService;
+    private UserStatisticsService userStatisticsService;
     /**
      * 缓存
      */
@@ -85,15 +85,15 @@ public class PlatformViewServiceImpl extends ServiceImpl<PlatformViewMapper, Pla
         if (null != object) {
             return (List<UserDistributionVO>) object;
         }
-        List<UserDistributionVO> memberDistributionVOS = memberStatisticsService.distribution();
+        List<UserDistributionVO> userDistributionVOS = userStatisticsService.distribution();
 
         //统计总数
         int count = 0;
-        for (UserDistributionVO vo : memberDistributionVOS) {
+        for (UserDistributionVO vo : userDistributionVOS) {
             count += vo.getNum();
         }
         //初始化数据，填充枚举和比例
-        for (UserDistributionVO vo : memberDistributionVOS) {
+        for (UserDistributionVO vo : userDistributionVOS) {
             vo.setProportion(CurrencyUtil.div(vo.getNum(), count, 4));
             //客户端填充
             if (StringUtils.isNotEmpty(vo.getClientEnum())) {
@@ -103,8 +103,8 @@ public class PlatformViewServiceImpl extends ServiceImpl<PlatformViewMapper, Pla
             }
         }
 
-        cache.put(CachePrefix.MEMBER_DISTRIBUTION.getPrefix(), memberDistributionVOS);
-        return memberDistributionVOS;
+        cache.put(CachePrefix.MEMBER_DISTRIBUTION.getPrefix(), userDistributionVOS);
+        return userDistributionVOS;
     }
 
     @Override

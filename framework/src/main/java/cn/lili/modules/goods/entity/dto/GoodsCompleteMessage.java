@@ -20,7 +20,7 @@ public class GoodsCompleteMessage {
     private String skuId;
 
     @ApiModelProperty(value = "购买会员sn")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "购买数量")
     private Integer buyNum;

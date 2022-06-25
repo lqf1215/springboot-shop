@@ -17,7 +17,7 @@ public class ConnectQueryDTO {
     /**
      * 用户id
      */
-    private String userId;
+    private Long userId;
 
     /**
      * 第三方id

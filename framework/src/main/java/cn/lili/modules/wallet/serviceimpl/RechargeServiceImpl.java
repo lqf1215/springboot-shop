@@ -14,7 +14,7 @@ import cn.lili.modules.wallet.entity.dos.Recharge;
 import cn.lili.modules.wallet.entity.dto.MemberWalletUpdateDTO;
 import cn.lili.modules.wallet.entity.enums.DepositServiceTypeEnum;
 import cn.lili.modules.wallet.mapper.RechargeMapper;
-import cn.lili.modules.wallet.service.MemberWalletService;
+import cn.lili.modules.wallet.service.UserWalletService;
 import cn.lili.modules.wallet.service.RechargeService;
 import cn.lili.mybatis.util.PageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -38,7 +38,7 @@ public class RechargeServiceImpl extends ServiceImpl<RechargeMapper, Recharge> i
      * 会员预存款
      */
     @Autowired
-    private MemberWalletService memberWalletService;
+    private UserWalletService userWalletService;
 
     @Override
     public Recharge recharge(Double price) {
@@ -63,7 +63,7 @@ public class RechargeServiceImpl extends ServiceImpl<RechargeMapper, Recharge> i
         //充值订单号
         queryWrapper.eq(!CharSequenceUtil.isEmpty(rechargeQueryVO.getRechargeSn()), "recharge_sn", rechargeQueryVO.getRechargeSn());
         //会员id
-        queryWrapper.eq(!CharSequenceUtil.isEmpty(rechargeQueryVO.getUserId()), "user_id", rechargeQueryVO.getUserId());
+        queryWrapper.eq(!CharSequenceUtil.isEmpty(""+rechargeQueryVO.getUserId()), "user_id", rechargeQueryVO.getUserId());
         //支付时间 开始时间和结束时间
         if (!CharSequenceUtil.isEmpty(rechargeQueryVO.getStartDate()) && !CharSequenceUtil.isEmpty(rechargeQueryVO.getEndDate())) {
             Date start = cn.hutool.core.date.DateUtil.parse(rechargeQueryVO.getStartDate());
@@ -89,7 +89,7 @@ public class RechargeServiceImpl extends ServiceImpl<RechargeMapper, Recharge> i
             //执行保存操作
             this.updateById(recharge);
             //增加预存款余额
-            memberWalletService.increase(new MemberWalletUpdateDTO(recharge.getRechargeMoney(), recharge.getUserId(), "会员余额充值，充值单号为：" + recharge.getRechargeSn(), DepositServiceTypeEnum.WALLET_RECHARGE.name()));
+            userWalletService.increase(new MemberWalletUpdateDTO(recharge.getRechargeMoney(), recharge.getUserId(), "会员余额充值，充值单号为：" + recharge.getRechargeSn(), DepositServiceTypeEnum.WALLET_RECHARGE.name()));
         }
     }
 

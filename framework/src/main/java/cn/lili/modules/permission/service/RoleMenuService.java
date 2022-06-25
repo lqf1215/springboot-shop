@@ -29,8 +29,10 @@ public interface RoleMenuService extends IService<RoleMenu> {
      * @param userId
      * @return
      */
-    List<UserMenuVO> findAllMenu(String userId);
+    List<UserMenuVO> findAllMenu(Long userId);
 
+
+    List<UserMenuVO> findAllMenu(String userId);
 
     /**
      * 更新某角色拥有到菜单

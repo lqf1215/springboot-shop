@@ -52,8 +52,8 @@ public class PageViewInterceptor {
         switch (pageViewEnum) {
             case SKU:
                 ResultMessage<Map<String, Object>> skuRvt = (ResultMessage<Map<String, Object>>) rvt;
-                if (skuRvt != null && skuRvt.getResult() != null && skuRvt.getResult().containsKey("data")) {
-                    GoodsSkuVO goodsSkuDetail = (GoodsSkuVO) skuRvt.getResult().get("data");
+                if (skuRvt != null && skuRvt.getData() != null && skuRvt.getData().containsKey("data")) {
+                    GoodsSkuVO goodsSkuDetail = (GoodsSkuVO) skuRvt.getData().get("data");
                     storeId = goodsSkuDetail.getStoreId();
                     goodsId = goodsSkuDetail.getGoodsId();
                     break;

@@ -27,7 +27,11 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select m.mobile from li_user m")
     List<String> getAllMemberMobile();
 
-    @Select("select * from li_user ${ew.customSqlSegment}")
+//    @Select("select u.id,u.name as user_name,u.phone,ub.nick ,ub.sex,ui.integral_mall,ub.avatar_url," +
+//            "uw.using,u.create_time from t_user u LEFT JOIN t_user_integral ui on ui.user_id=u.id LEFT JOIN t_user_base ub " +
+//            "on  ub.user_id=u.id LEFT JOIN t_user_wallet uw on uw.user_id=u.id and uw.currency_id=1 ")
+//            "${ew.customSqlSegment}")
+@Select("select * from t_member ${ew.customSqlSegment}")
     IPage<UserVO> pageByMemberVO(IPage<UserVO> page, @Param(Constants.WRAPPER) Wrapper<User> queryWrapper);
 
     @Select("select u.id,u.name as user_name,u.phone,ub.nick ,ub.sex,ui.integral_mall,ub.avatar_url," +

@@ -1,13 +1,11 @@
 package cn.lili.modules.statistics.serviceimpl;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateTime;
 import cn.lili.common.security.context.UserContext;
 import cn.lili.common.security.enums.UserEnums;
 import cn.lili.common.utils.BeanUtil;
 import cn.lili.modules.goods.entity.enums.GoodsAuthEnum;
 import cn.lili.modules.goods.entity.enums.GoodsStatusEnum;
-import cn.lili.modules.order.order.entity.enums.FlowTypeEnum;
 import cn.lili.modules.order.order.entity.enums.OrderStatusEnum;
 import cn.lili.modules.order.trade.entity.enums.AfterSaleTypeEnum;
 import cn.lili.modules.statistics.entity.dto.GoodsStatisticsQueryParam;
@@ -15,17 +13,9 @@ import cn.lili.modules.statistics.entity.dto.StatisticsQueryParam;
 import cn.lili.modules.statistics.entity.enums.SearchTypeEnum;
 import cn.lili.modules.statistics.entity.vo.*;
 import cn.lili.modules.statistics.service.*;
-import cn.lili.modules.statistics.util.StatisticsDateUtil;
-import cn.lili.modules.store.entity.enums.BillStatusEnum;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -46,7 +36,7 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
      * 会员统计
      */
     @Autowired
-    private MemberStatisticsService memberStatisticsService;
+    private UserStatisticsService userStatisticsService;
     /**
      * 商品统计
      */
@@ -55,14 +45,18 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
     /**
      * 商品统计
      */
-    @Autowired
-    private StoreFlowStatisticsService storeFlowStatisticsService;
-
+//    @Autowired
+//    private StoreFlowStatisticsService storeFlowStatisticsService;
+    /**
+     * 店铺
+     */
+//    @Autowired
+//    private StoreStatisticsService storeStatisticsService;
     /**
      * 店铺
      */
     @Autowired
-    private MemberEvaluationStatisticsService memberEvaluationStatisticsService;
+    private UserEvaluationStatisticsService userEvaluationStatisticsService;
     /**
      * 售后
      */
@@ -73,7 +67,11 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
      */
     @Autowired
     private OrderComplaintStatisticsService orderComplaintStatisticsService;
-
+    /**
+     * 分销员提现
+     */
+//    @Autowired
+//    private DistributionCashStatisticsService distributionCashStatisticsService;
     /**
      * 平台PV统计
      */
@@ -82,8 +80,8 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
     /**
      * 结算单
      */
-    @Autowired
-    private BillStatisticsService billStatisticsService;
+//    @Autowired
+//    private BillStatisticsService billStatisticsService;
     /**
      * 秒杀活动
      */
@@ -96,14 +94,16 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         IndexNoticeVO indexNoticeVO = new IndexNoticeVO();
         //商品审核
         indexNoticeVO.setGoods(goodsStatisticsService.goodsNum(null, GoodsAuthEnum.TOBEAUDITED));
-
+        //店铺入驻审核
+//        indexNoticeVO.setStore(storeStatisticsService.auditNum());
         //售后申请
         indexNoticeVO.setRefund(afterSaleStatisticsService.applyNum(null));
         //投诉审核
         indexNoticeVO.setComplain(orderComplaintStatisticsService.waitComplainNum());
-
+        //分销员提现审核
+//        indexNoticeVO.setDistributionCash(distributionCashStatisticsService.newDistributionCash());
         //待处理商家结算
-        indexNoticeVO.setWaitPayBill(billStatisticsService.billNum(BillStatusEnum.CHECK));
+//        indexNoticeVO.setWaitPayBill(billStatisticsService.billNum(BillStatusEnum.CHECK));
         return indexNoticeVO;
     }
 
@@ -116,25 +116,27 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         //获取总订单数量
         indexStatisticsVO.setOrderNum(orderStatisticsService.orderNum(null));
         //获取总会员数量
-        indexStatisticsVO.setMemberNum(memberStatisticsService.getMemberCount());
+        indexStatisticsVO.setMemberNum(userStatisticsService.getMemberCount());
         //获取总上架商品数量
         indexStatisticsVO.setGoodsNum(goodsStatisticsService.goodsNum(GoodsStatusEnum.UPPER, GoodsAuthEnum.PASS));
-
+        //获取总店铺数量
+//        indexStatisticsVO.setStoreNum(storeStatisticsService.storeNum());
 
         //下单统计
-        Map<String, Object> map = storeFlowStatisticsService.getOrderStatisticsPrice();
+//        Map<String, Object> map = storeFlowStatisticsService.getOrderStatisticsPrice();
         //今日下单数
-        indexStatisticsVO.setTodayOrderNum(map.get("num") == null ? 0L : (Long) map.get("num"));
+//        indexStatisticsVO.setTodayOrderNum(map.get("num") == null ? 0L : (Long) map.get("num"));
         //今日下单金额
-        indexStatisticsVO.setTodayOrderPrice(map.get("price") == null ? 0D : (Double) map.get("price"));
+//        indexStatisticsVO.setTodayOrderPrice(map.get("price") == null ? 0D : (Double) map.get("price"));
 
         //今日新增会员数量
-        indexStatisticsVO.setTodayMemberNum(memberStatisticsService.todayMemberNum());
+        indexStatisticsVO.setTodayMemberNum(userStatisticsService.todayMemberNum());
         //今日新增商品数量
         indexStatisticsVO.setTodayGoodsNum(goodsStatisticsService.todayUpperNum());
-
+        //今日新增店铺数量
+//        indexStatisticsVO.setTodayStoreNum(storeStatisticsService.todayStoreNum());
         //今日新增评论数量
-        indexStatisticsVO.setTodayMemberEvaluation(memberEvaluationStatisticsService.todayMemberEvaluation());
+        indexStatisticsVO.setTodayMemberEvaluation(userEvaluationStatisticsService.todayMemberEvaluation());
         //当前在线人数
         indexStatisticsVO.setCurrentNumberPeopleOnline(platformViewService.online());
 
@@ -171,9 +173,9 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         //商品总数量
         storeIndexStatisticsVO.setGoodsNum(goodsStatisticsService.goodsNum(GoodsStatusEnum.UPPER, null));
         //订单总数量、订单总金额
-        Map<String, Object> map = storeFlowStatisticsService.getOrderStatisticsPrice();
-        storeIndexStatisticsVO.setOrderNum(Convert.toInt(map.get("num").toString()));
-        storeIndexStatisticsVO.setOrderPrice(map.get("price") != null ? Double.parseDouble(map.get("price").toString()) : 0.0);
+//        Map<String, Object> map = storeFlowStatisticsService.getOrderStatisticsPrice();
+//        storeIndexStatisticsVO.setOrderNum(Convert.toInt(map.get("num").toString()));
+//        storeIndexStatisticsVO.setOrderPrice(map.get("price") != null ? Double.parseDouble(map.get("price").toString()) : 0.0);
 
         //访问量
         StatisticsQueryParam queryParam = new StatisticsQueryParam();
@@ -194,7 +196,7 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         //待处理退款数量
         storeIndexStatisticsVO.setReturnMoney(afterSaleStatisticsService.applyNum(AfterSaleTypeEnum.RETURN_MONEY.name()));
         //待回复评价数量
-        storeIndexStatisticsVO.setMemberEvaluation(memberEvaluationStatisticsService.getWaitReplyNum());
+        storeIndexStatisticsVO.setMemberEvaluation(userEvaluationStatisticsService.getWaitReplyNum());
         //待处理投诉数量
         storeIndexStatisticsVO.setComplaint(orderComplaintStatisticsService.waitComplainNum());
 
@@ -206,37 +208,37 @@ public class IndexStatisticsServiceImpl implements IndexStatisticsService {
         //可参与秒杀活动数量
         storeIndexStatisticsVO.setSeckillNum(seckillStatisticsService.getApplyNum());
         //待处理商家结算
-        storeIndexStatisticsVO.setWaitPayBill(billStatisticsService.billNum(BillStatusEnum.OUT));
+//        storeIndexStatisticsVO.setWaitPayBill(billStatisticsService.billNum(BillStatusEnum.OUT));
 
         return storeIndexStatisticsVO;
     }
 
-    @Override
-    public List<GoodsStatisticsDataVO> goodsStatistics(GoodsStatisticsQueryParam statisticsQueryParam) {
-        //查询商品
-        return storeFlowStatisticsService.getGoodsStatisticsData(statisticsQueryParam, 10);
-    }
+//    @Override
+//    public List<GoodsStatisticsDataVO> goodsStatistics(GoodsStatisticsQueryParam statisticsQueryParam) {
+//        //查询商品
+////        return storeFlowStatisticsService.getGoodsStatisticsData(statisticsQueryParam, 10);
+//    }
 
-    @Override
-    public List<StoreStatisticsDataVO> storeStatistics(StatisticsQueryParam statisticsQueryParam) {
-
-        QueryWrapper queryWrapper = Wrappers.query();
-
-        Date[] dates = StatisticsDateUtil.getDateArray(statisticsQueryParam);
-        Date startTime = dates[0], endTime = dates[1];
-        queryWrapper.between("create_time", startTime, endTime);
-
-        queryWrapper.orderByDesc("price");
-
-        queryWrapper.groupBy("store_id,store_name ");
-
-        queryWrapper.eq("flow_type", FlowTypeEnum.PAY.name());
-
-        //查询前十条记录
-        Page page = new Page<StoreStatisticsDataVO>(1, 10);
-
-        return storeFlowStatisticsService.getStoreStatisticsData(page, queryWrapper);
-    }
+//    @Override
+//    public List<StoreStatisticsDataVO> storeStatistics(StatisticsQueryParam statisticsQueryParam) {
+//
+//        QueryWrapper queryWrapper = Wrappers.query();
+//
+//        Date[] dates = StatisticsDateUtil.getDateArray(statisticsQueryParam);
+//        Date startTime = dates[0], endTime = dates[1];
+//        queryWrapper.between("create_time", startTime, endTime);
+//
+//        queryWrapper.orderByDesc("price");
+//
+//        queryWrapper.groupBy("store_id,store_name ");
+//
+//        queryWrapper.eq("flow_type", FlowTypeEnum.PAY.name());
+//
+//        //查询前十条记录
+//        Page page = new Page<StoreStatisticsDataVO>(1, 10);
+//
+////        return storeFlowStatisticsService.getStoreStatisticsData(page, queryWrapper);
+//    }
 
 
     /**

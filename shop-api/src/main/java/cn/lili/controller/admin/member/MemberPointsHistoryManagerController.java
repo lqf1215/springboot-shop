@@ -35,14 +35,14 @@ public class MemberPointsHistoryManagerController {
             @ApiImplicitParam(name = "userName", value = "会员名称", required = true, paramType = "query")
     })
     @GetMapping(value = "/getByPage")
-    public ResultMessage<IPage<UserPointsHistory>> getByPage(PageVO page, String userId, String userName) {
+    public ResultMessage<IPage<UserPointsHistory>> getByPage(PageVO page, Long userId, String userName) {
         return ResultUtil.data(userPointsHistoryService.MemberPointsHistoryList(page, userId, userName));
     }
 
     @ApiOperation(value = "获取会员积分VO")
     @ApiImplicitParam(name = "userId", value = "会员ID", paramType = "query")
     @GetMapping(value = "/getMemberPointsHistoryVO")
-    public ResultMessage<UserPointsHistoryVO> getMemberPointsHistoryVO(String userId) {
+    public ResultMessage<UserPointsHistoryVO> getMemberPointsHistoryVO(Long userId) {
         return ResultUtil.data(userPointsHistoryService.getMemberPointsHistoryVO(userId));
     }
 

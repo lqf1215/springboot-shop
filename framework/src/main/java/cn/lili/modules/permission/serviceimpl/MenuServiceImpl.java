@@ -66,7 +66,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<Menu> findUserList(String userId) {
+    public List<Menu> findUserList(Long userId) {
         String cacheKey = CachePrefix.USER_MENU.getPrefix(UserEnums.MANAGER) + userId;
         List<Menu> menuList = cache.get(cacheKey);
         if (menuList == null) {

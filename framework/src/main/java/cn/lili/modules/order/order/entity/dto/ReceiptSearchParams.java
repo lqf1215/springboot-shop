@@ -21,7 +21,7 @@ public class ReceiptSearchParams {
     private String taxpayerId;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;
@@ -46,7 +46,7 @@ public class ReceiptSearchParams {
         if (StrUtil.isNotEmpty(taxpayerId)) {
             queryWrapper.like("r.taxpayer_id", taxpayerId);
         }
-        if (StrUtil.isNotEmpty(userId)) {
+        if (StrUtil.isNotEmpty(""+userId)) {
             queryWrapper.eq("r.user_id", userId);
         }
         if (StrUtil.isNotEmpty(storeName)) {

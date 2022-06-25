@@ -120,12 +120,12 @@ public class TradeDTO implements Serializable {
     /**
      * 买家id
      */
-    private String userId;
+    private Long userId;
 
     /**
      * 分销商id
      */
-    private String distributionId;
+//    private String distributionId;
 
     /**
      * 订单vo

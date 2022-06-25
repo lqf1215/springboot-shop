@@ -32,7 +32,7 @@ import java.util.Date;
 public class RefundLog extends BaseIdEntity {
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "退单编号")
     private String afterSaleNo;

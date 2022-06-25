@@ -28,23 +28,23 @@ import java.util.Objects;
 @RequestMapping("/store/statistics/refundOrder")
 public class RefundOrderStatisticsStoreController {
 
-    @Autowired
-    private RefundOrderStatisticsService refundOrderStatisticsService;
+//    @Autowired
+//    private RefundOrderStatisticsService refundOrderStatisticsService;
 
-    @ApiOperation(value = "获取退款统计列表")
-    @GetMapping("/getByPage")
-    public ResultMessage<IPage<RefundOrderStatisticsDataVO>> getByPage(PageVO pageVO, StatisticsQueryParam statisticsQueryParam) {
-        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
-        statisticsQueryParam.setStoreId(storeId);
-        return ResultUtil.data(refundOrderStatisticsService.getRefundOrderStatisticsData(pageVO, statisticsQueryParam));
-    }
-
-    @ApiOperation(value = "获取退款统计金额")
-    @GetMapping("/getPrice")
-    public ResultMessage<Object> getPrice(StatisticsQueryParam statisticsQueryParam) {
-        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
-        statisticsQueryParam.setStoreId(storeId);
-        Double price = refundOrderStatisticsService.getRefundOrderStatisticsPrice(statisticsQueryParam);
-        return ResultUtil.data(price);
-    }
+//    @ApiOperation(value = "获取退款统计列表")
+//    @GetMapping("/getByPage")
+//    public ResultMessage<IPage<RefundOrderStatisticsDataVO>> getByPage(PageVO pageVO, StatisticsQueryParam statisticsQueryParam) {
+//        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+//        statisticsQueryParam.setStoreId(storeId);
+//        return ResultUtil.data(refundOrderStatisticsService.getRefundOrderStatisticsData(pageVO, statisticsQueryParam));
+//    }
+//
+//    @ApiOperation(value = "获取退款统计金额")
+//    @GetMapping("/getPrice")
+//    public ResultMessage<Object> getPrice(StatisticsQueryParam statisticsQueryParam) {
+//        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+//        statisticsQueryParam.setStoreId(storeId);
+//        Double price = refundOrderStatisticsService.getRefundOrderStatisticsPrice(statisticsQueryParam);
+//        return ResultUtil.data(price);
+//    }
 }

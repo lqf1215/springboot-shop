@@ -33,7 +33,7 @@ public class MemberWithdrawApplyQueryVO implements Serializable {
      * 会员ID
      */
     @ApiModelProperty(value = "会员Id")
-    private String userId;
+    private Long userId;
     /**
      * 会员名称
      */

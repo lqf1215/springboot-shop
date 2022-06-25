@@ -49,7 +49,7 @@ public class FileController {
         FileOwnerDTO fileOwnerDTO = new FileOwnerDTO();
         //只有买家才写入自己id
         if (authUser.getRole().equals(UserEnums.MEMBER)) {
-            fileOwnerDTO.setOwnerId(authUser.getId());
+//            fileOwnerDTO.setOwnerId(authUser.getId());
         }//如果是店铺，则写入店铺id
         else if (authUser.getRole().equals(UserEnums.STORE)) {
             fileOwnerDTO.setOwnerId(authUser.getStoreId());

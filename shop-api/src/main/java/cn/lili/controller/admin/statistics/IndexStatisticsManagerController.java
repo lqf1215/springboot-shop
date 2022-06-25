@@ -51,20 +51,20 @@ public class IndexStatisticsManagerController {
         return null;
     }
 
-    @ApiOperation(value = "获取首页查询热卖商品TOP10")
-    @GetMapping("/goodsStatistics")
-    public ResultMessage<List<GoodsStatisticsDataVO>> goodsStatistics(GoodsStatisticsQueryParam goodsStatisticsQueryParam) {
+//    @ApiOperation(value = "获取首页查询热卖商品TOP10")
+//    @GetMapping("/goodsStatistics")
+//    public ResultMessage<List<GoodsStatisticsDataVO>> goodsStatistics(GoodsStatisticsQueryParam goodsStatisticsQueryParam) {
+//
+//        //按照金额查询
+//        goodsStatisticsQueryParam.setType(StatisticsQuery.PRICE.name());
+//        return ResultUtil.data(indexStatisticsService.goodsStatistics(goodsStatisticsQueryParam));
+//    }
 
-        //按照金额查询
-        goodsStatisticsQueryParam.setType(StatisticsQuery.PRICE.name());
-        return ResultUtil.data(indexStatisticsService.goodsStatistics(goodsStatisticsQueryParam));
-    }
-
-    @ApiOperation(value = "获取首页查询热卖店铺TOP10")
-    @GetMapping("/storeStatistics")
-    public ResultMessage<List<StoreStatisticsDataVO>> storeStatistics(StatisticsQueryParam statisticsQueryParam) {
-        return ResultUtil.data(indexStatisticsService.storeStatistics(statisticsQueryParam));
-    }
+//    @ApiOperation(value = "获取首页查询热卖店铺TOP10")
+//    @GetMapping("/storeStatistics")
+//    public ResultMessage<List<StoreStatisticsDataVO>> storeStatistics(StatisticsQueryParam statisticsQueryParam) {
+//        return ResultUtil.data(indexStatisticsService.storeStatistics(statisticsQueryParam));
+//    }
 
     @ApiOperation(value = "通知提示信息")
     @GetMapping("/notice")

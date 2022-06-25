@@ -23,7 +23,7 @@ public class KanjiaActivitySearchParams extends BasePromotionsSearchParams {
     private String kanjiaActivityGoodsId;
 
     @ApiModelProperty(value = "会员ID" ,hidden = true)
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "状态")
     private String status;
@@ -41,7 +41,7 @@ public class KanjiaActivitySearchParams extends BasePromotionsSearchParams {
         queryWrapper.eq(StrUtil.isNotEmpty(kanjiaActivityId), "id", kanjiaActivityId);
         queryWrapper.eq(StrUtil.isNotEmpty(kanjiaActivityGoodsId), "kanjia_activity_goods_id", kanjiaActivityGoodsId);
         queryWrapper.eq(StrUtil.isNotEmpty(goodsSkuId), "sku_id", goodsSkuId);
-        queryWrapper.eq(StrUtil.isNotEmpty(userId), "user_id", userId);
+        queryWrapper.eq(StrUtil.isNotEmpty(""+userId), "user_id", userId);
         queryWrapper.eq(StrUtil.isNotEmpty(status), "status", status);
         return queryWrapper;
     }

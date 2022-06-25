@@ -42,7 +42,7 @@ public class AfterSaleOperationLogAspect {
             if (auth != null) {
                 //日志对象拼接
                 userName = UserContext.getCurrentUser().getUsername();
-                id = UserContext.getCurrentUser().getId();
+                id = ""+UserContext.getCurrentUser().getId();
                 role = UserContext.getCurrentUser().getRole().getRole();
             }
             Map<String, String> afterSaleLogPoints = spelFormat(joinPoint, rvt);

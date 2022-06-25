@@ -13,6 +13,7 @@ import cn.lili.common.vo.PageVO;
 import cn.lili.modules.goods.entity.dos.GoodsSku;
 import cn.lili.modules.goods.service.GoodsSkuService;
 import cn.lili.modules.user.entity.dos.User;
+import cn.lili.modules.user.entity.vo.UserVO;
 import cn.lili.modules.user.service.UserService;
 import cn.lili.modules.promotion.entity.dos.KanjiaActivity;
 import cn.lili.modules.promotion.entity.dos.KanjiaActivityGoods;
@@ -142,9 +143,10 @@ public class KanjiaActivityServiceImpl extends ServiceImpl<KanJiaActivityMapper,
 
     @Override
     public KanjiaActivityLog helpKanJia(String kanjiaActivityId) {
-        AuthUser authUser = Objects.requireNonNull(UserContext.getCurrentUser());
+//        AuthUser authUser = Objects.requireNonNull(UserContext.getCurrentUser());
         //获取会员信息
-        User user = userService.getById(authUser.getId());
+//        User user = userService.getById(authUser.getId());
+        UserVO user = userService.getUserInfo(23);
         //根据砍价发起活动id查询砍价活动信息
         KanjiaActivity kanjiaActivity = this.getById(kanjiaActivityId);
         //判断活动非空或非正在进行中的活动
@@ -161,7 +163,7 @@ public class KanjiaActivityServiceImpl extends ServiceImpl<KanJiaActivityMapper,
         //判断是否已参与
         LambdaQueryWrapper<KanjiaActivityLog> lambdaQueryWrapper = new LambdaQueryWrapper<KanjiaActivityLog>()
                 .eq(KanjiaActivityLog::getKanjiaActivityId, kanjiaActivityId)
-                .eq(KanjiaActivityLog::getKanjiaMemberId, ""+user.getId());
+                .eq(KanjiaActivityLog::getKanjiaMemberId, user.getId());
         if (kanjiaActivityLogService.count(lambdaQueryWrapper) > 0) {
             throw new ServiceException(ResultCode.PROMOTION_LOG_EXIST);
         }
@@ -176,7 +178,7 @@ public class KanjiaActivityServiceImpl extends ServiceImpl<KanJiaActivityMapper,
         //计算剩余金额
         kanjiaActivityDTO.setSurplusPrice(CurrencyUtil.sub(kanjiaActivity.getSurplusPrice(), price));
         kanjiaActivityDTO.setKanjiaMemberId(""+user.getId());
-        kanjiaActivityDTO.setKanjiaMemberName(user.getName());
+        kanjiaActivityDTO.setKanjiaMemberName(user.getUsername());
 //        kanjiaActivityDTO.setKanjiaMemberFace(user.getFace());
         KanjiaActivityLog kanjiaActivityLog = kanjiaActivityLogService.addKanJiaActivityLog(kanjiaActivityDTO);
 

@@ -70,7 +70,7 @@ public class CheckDataRender implements CartRenderStep {
         checkData(tradeDTO);
 
         //店铺分组数据初始化
-//        groupStore(tradeDTO);
+        groupStore(tradeDTO);
 
     }
 
@@ -111,8 +111,6 @@ public class CheckDataRender implements CartRenderStep {
                 cartSkuVO.setErrorMessage("商品已下架");
                 continue;
             }
-            System.out.println("dataSku.getQuantity() =="+dataSku.toString()+"==="+dataSku.getQuantity() );
-            System.out.println("==="+ cartSkuVO.getNum());
             //商品库存判定
             if (dataSku.getQuantity() < cartSkuVO.getNum()) {
                 //设置购物车未选中
@@ -122,7 +120,6 @@ public class CheckDataRender implements CartRenderStep {
             }
         }
     }
-
     /**
      * 店铺分组
      *
@@ -132,33 +129,39 @@ public class CheckDataRender implements CartRenderStep {
         //渲染的购物车
         List<CartVO> cartList = new ArrayList<>();
 
+
+        System.out.println("=========groupStore===================="+tradeDTO.getSkuList()+"===");
+
         //根据店铺分组
-        Map<String, List<CartSkuVO>> storeCollect = tradeDTO.getSkuList().stream().collect(Collectors.groupingBy(CartSkuVO::getStoreId));
-        for (Map.Entry<String, List<CartSkuVO>> storeCart : storeCollect.entrySet()) {
-            if (!storeCart.getValue().isEmpty()) {
-                CartVO cartVO = new CartVO(storeCart.getValue().get(0));
+        List<CartSkuVO>storeCollect = tradeDTO.getSkuList();
+        System.out.println("=========groupStore====storeCollect================"+storeCollect);
+
+        for (CartSkuVO storeCart: storeCollect) {
+                CartVO cartVO = new CartVO(storeCart);
                 if (CharSequenceUtil.isEmpty(cartVO.getDeliveryMethod())) {
                     cartVO.setDeliveryMethod(DeliveryMethodEnum.LOGISTICS.name());
                 }
-                cartVO.setSkuList(storeCart.getValue());
-                try {
-                    //筛选属于当前店铺的优惠券
-                    storeCart.getValue().forEach(i -> i.getPromotionMap().forEach((key, value) -> {
-                        JSONObject promotionsObj = JSONUtil.parseObj(value);
-                        Coupon coupon = JSONUtil.toBean(promotionsObj, Coupon.class);
-                        if (key.contains(PromotionTypeEnum.COUPON.name()) && coupon.getStoreId().equals(storeCart.getKey())) {
-                            cartVO.getCanReceiveCoupon().add(new CouponVO(coupon));
-                        }
-                    }));
-                } catch (Exception e) {
-                    log.error("筛选属于当前店铺的优惠券发生异常！", e);
-                }
-                storeCart.getValue().stream().filter(i -> Boolean.TRUE.equals(i.getChecked())).findFirst().ifPresent(cartSkuVO -> cartVO.setChecked(true));
+                cartVO.setSkuList(storeCollect);
+//                try {
+//                    //筛选属于当前店铺的优惠券
+//                    storeCart.getValue().forEach(i -> i.getPromotionMap().forEach((key, value) -> {
+//                        JSONObject promotionsObj = JSONUtil.parseObj(value);
+//                        Coupon coupon = JSONUtil.toBean(promotionsObj, Coupon.class);
+//                        if (key.contains(PromotionTypeEnum.COUPON.name()) && coupon.getStoreId().equals(storeCart.getKey())) {
+//                            cartVO.getCanReceiveCoupon().add(new CouponVO(coupon));
+//                        }
+//                    }));
+//                } catch (Exception e) {
+//                    log.error("筛选属于当前店铺的优惠券发生异常！", e);
+//                }
+            cartVO.setChecked(true);
+//                          storeCart.stream().filter(i -> Boolean.TRUE.equals(i.getChecked())).findFirst().ifPresent(cartSkuVO -> cartVO.setChecked(true));
                 cartList.add(cartVO);
-            }
+//            }
         }
         tradeDTO.setCartList(cartList);
     }
+
 
     /**
      * 订单预校验

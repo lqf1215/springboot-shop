@@ -1,14 +1,11 @@
 package cn.lili.controller.admin.other;
 
 import cn.lili.common.enums.ResultUtil;
-import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.PageVO;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.system.entity.dos.Logistics;
-import cn.lili.modules.system.entity.vo.StoreLogisticsVO;
 import cn.lili.modules.system.service.LogisticsService;
 import cn.lili.mybatis.util.PageUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 管理端,物流公司接口
@@ -33,8 +28,6 @@ import java.util.Objects;
 public class LogisticsManagerController {
     @Autowired
     private LogisticsService logisticsService;
-
-
 
     @ApiOperation(value = "通过id获取物流公司")
     @GetMapping(value = "/get/{id}")
@@ -71,7 +64,4 @@ public class LogisticsManagerController {
         logisticsService.removeById(id);
         return ResultUtil.success();
     }
-
-
-
 }

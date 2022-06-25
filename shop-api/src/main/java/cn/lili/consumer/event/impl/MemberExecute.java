@@ -18,8 +18,8 @@ public class MemberExecute implements MemberLoginEvent {
     @Autowired
     private UserService userService;
 
-    @Override
-    public void memberLogin(User user) {
-        userService.updateMemberLoginTime(""+user.getId());
-    }
+//    @Override
+//    public void memberLogin(User user) {
+//        userService.updateMemberLoginTime(user.getId());
+//    }
 }

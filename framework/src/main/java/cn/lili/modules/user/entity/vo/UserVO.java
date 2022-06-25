@@ -27,7 +27,7 @@ public class UserVO implements Serializable {
     private static final long serialVersionUID = 1810890757303309436L;
 
     @ApiModelProperty(value = "唯一标识", hidden = true)
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "会员用户名")
     private String username;

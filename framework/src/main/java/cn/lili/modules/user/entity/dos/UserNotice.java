@@ -21,7 +21,7 @@ public class UserNotice extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "是否已读")
     private Boolean isRead;

@@ -38,7 +38,7 @@ public class AfterSale extends BaseEntity {
     private String tradeSn;
 
     @ApiModelProperty(value = "会员ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;

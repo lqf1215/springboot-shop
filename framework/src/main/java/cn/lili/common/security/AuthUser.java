@@ -33,7 +33,7 @@ public class AuthUser implements Serializable {
     /**
      * id
      */
-    private String id;
+    private Long id;
 
     /**
      * 长期有效（用于手机app登录场景或者信任场景等）
@@ -63,7 +63,7 @@ public class AuthUser implements Serializable {
      */
     private Boolean isSuper = false;
 
-    public AuthUser(String username, String id, String nickName, String face, UserEnums role) {
+    public AuthUser(String username, Long id, String nickName, String face, UserEnums role) {
         this.username = username;
         this.face = face;
         this.id = id;
@@ -71,7 +71,7 @@ public class AuthUser implements Serializable {
         this.nickName = nickName;
     }
 
-    public AuthUser(String username, String id, String face, UserEnums manager, String nickName, Boolean isSuper) {
+    public AuthUser(String username, Long id, String face, UserEnums manager, String nickName, Boolean isSuper) {
         this.username = username;
         this.id = id;
         this.face = face;
@@ -79,4 +79,7 @@ public class AuthUser implements Serializable {
         this.isSuper = isSuper;
         this.nickName = nickName;
     }
+
+
+
 }

@@ -208,7 +208,7 @@ public class CouponActivityServiceImpl extends AbstractPromotionsServiceImpl<Cou
                     //循环会员列表，添加优惠券
                     for (Map<String, Object> map : memberList) {
                         MemberCoupon memberCoupon = new MemberCoupon(coupon);
-                        memberCoupon.setUserId(map.get("id").toString());
+                        memberCoupon.setUserId((Long) map.get("id"));
                         memberCoupon.setUserName(map.get("nick_name").toString());
                         memberCoupon.setMemberCouponStatus(MemberCouponStatusEnum.NEW.name());
                         memberCoupon.setPlatformFlag(PromotionTools.PLATFORM_ID.equals(coupon.getStoreId()));

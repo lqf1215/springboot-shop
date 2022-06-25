@@ -92,7 +92,7 @@ public class OrderComplaint extends BaseEntity {
     private String storeName;
 
     @ApiModelProperty(value = "会员id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "会员名称")
     private String userName;

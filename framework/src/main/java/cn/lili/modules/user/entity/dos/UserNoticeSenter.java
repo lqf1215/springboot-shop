@@ -31,7 +31,7 @@ public class UserNoticeSenter extends BaseEntity {
      * 会员id
      */
     @ApiModelProperty(value = "会员id")
-    private String userIds;
+    private String memberIds;
     /**
      * 发送类型
      */

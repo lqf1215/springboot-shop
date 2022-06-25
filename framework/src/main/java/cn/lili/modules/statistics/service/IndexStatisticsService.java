@@ -41,7 +41,7 @@ public interface IndexStatisticsService {
      * @param statisticsQueryParam 商品统计查询参数
      * @return 热卖商品TOP10
      */
-    List<GoodsStatisticsDataVO> goodsStatistics(GoodsStatisticsQueryParam statisticsQueryParam);
+//    List<GoodsStatisticsDataVO> goodsStatistics(GoodsStatisticsQueryParam statisticsQueryParam);
 
     /**
      * 查询热卖店铺TOP10
@@ -49,7 +49,7 @@ public interface IndexStatisticsService {
      *
      * @return 当月的热卖店铺TOP10
      */
-    List<StoreStatisticsDataVO> storeStatistics(StatisticsQueryParam statisticsQueryParam);
+//    List<StoreStatisticsDataVO> storeStatistics(StatisticsQueryParam statisticsQueryParam);
 
 
 }

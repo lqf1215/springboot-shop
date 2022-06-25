@@ -30,7 +30,7 @@ public class UserNoticeLog extends BaseEntity {
     private String content;
 
     @ApiModelProperty(value = "会员id")
-    private String userIds;
+    private String memberIds;
 
     @ApiModelProperty(value = "管理员id")
     private String adminId;
