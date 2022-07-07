@@ -1,5 +1,7 @@
 package cn.lili.modules.user.entity.dto;
 
+import cn.lili.common.security.sensitive.Sensitive;
+import cn.lili.common.security.sensitive.enums.SensitiveStrategy;
 import cn.lili.common.validation.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,8 +22,9 @@ public class UserAddressDTO {
     @ApiModelProperty(value = "收货人姓名")
     private String consigneeName;
 
-    @Phone
+//    @Phone
     @ApiModelProperty(value = "手机号码")
+    @Sensitive(strategy = SensitiveStrategy.PHONE)
     private String consigneeMobile;
 
     @NotBlank(message = "地址不能为空")

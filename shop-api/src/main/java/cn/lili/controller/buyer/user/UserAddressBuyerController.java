@@ -53,7 +53,7 @@ public class UserAddressBuyerController {
 
     @ApiOperation(value = "新增会员收件地址")
     @PostMapping
-    public ResultMessage<UserAddress> addShippingAddress(@Valid UserAddress shippingAddress) {
+    public ResultMessage<UserAddress> addShippingAddress(@Valid @RequestBody UserAddress shippingAddress) {
         //添加会员地址
         shippingAddress.setUserId(23L);
         if(shippingAddress.getIsDefault()==null){
@@ -64,7 +64,7 @@ public class UserAddressBuyerController {
 
     @ApiOperation(value = "修改会员收件地址")
     @PutMapping
-    public ResultMessage<UserAddress> editShippingAddress(@Valid UserAddress shippingAddress) {
+    public ResultMessage<UserAddress> editShippingAddress(@Valid @RequestBody UserAddress shippingAddress) {
         return ResultUtil.data(userAddressService.updateMemberAddress(shippingAddress));
     }
 

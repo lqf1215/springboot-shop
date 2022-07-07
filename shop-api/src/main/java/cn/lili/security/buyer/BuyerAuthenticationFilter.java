@@ -72,14 +72,14 @@ public class BuyerAuthenticationFilter extends BasicAuthenticationFilter {
         //从header中获取jwt
         String jwt = request.getHeader(SecurityEnum.HEADER_TOKEN.getValue());
         try {
-            //如果没有token 则return
+//            如果没有token 则return
             if (StrUtil.isBlank(jwt)) {
                 chain.doFilter(request, response);
                 return;
             }
-            //获取用户信息，存入context
+//            获取用户信息，存入context
             UsernamePasswordAuthenticationToken authentication = getAuthentication(jwt, response);
-            //自定义权限过滤
+//            自定义权限过滤
             if (authentication != null) {
                 if (cache.hasKey(CachePrefix.ACCESS_TOKEN.getPrefix(UserEnums.MANAGER) + jwt)) {
                     customAuthentication(request, response, authentication);
